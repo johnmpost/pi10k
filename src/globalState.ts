@@ -1,10 +1,18 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { createSlice } from "@reduxjs/toolkit";
+import { Config } from "./types";
 
-type GlobalState = {};
+type GlobalState = { config: Config };
 
-const initialState: GlobalState = {};
+const initialState: GlobalState = {
+  // TODO: save and load using local storage
+  config: {
+    showExtraDigitsCount: 4,
+    allowedQuizMistakes: 3,
+    groupings: [],
+  },
+};
 
 export const appSlice = createSlice({
   name: "app",
