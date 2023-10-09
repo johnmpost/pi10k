@@ -8,15 +8,31 @@ export type PiState = {
     | { kind: "quiz"; mistakesMade: number; currLocation: number };
   practice: {
     nextDigitsVisibility: "show" | "hide";
-    markLocation: number;
+    markLocation: O.Option<number>;
     currLocation: number;
   };
-  keycutOperator: O.Option<KeycutState>;
+  keycut: O.Option<KeycutState>;
 };
 
-type PiAction = KeycutAction | { kind: "enterDigit"; digit: Digit };
+type PiAction =
+  | KeycutAction
+  | { kind: "enterDigit"; digit: Digit }
+  | { kind: "clearKeycut" }
+  | { kind: "startKeycut" }
+  | { kind: "executeKeycut" }
+  | { kind: "setKeycutParameters" };
 
-const initialState: PiState = {};
+const initialState: PiState = {
+  mode: {
+    kind: "practice",
+  },
+  practice: {
+    nextDigitsVisibility: "show",
+    markLocation: O.none,
+    currLocation: 0,
+  },
+  keycut: O.none,
+};
 
 const reducer = (state: PiState, action: PiAction) => state;
 
