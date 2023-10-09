@@ -1,15 +1,28 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { reducer } from "./appReducer";
+import { createSlice } from "@reduxjs/toolkit";
+
+type GlobalState = {};
+
+const initialState: GlobalState = {};
+
+export const appSlice = createSlice({
+  name: "app",
+  initialState,
+  reducers: {},
+});
+
+export const {} = appSlice;
+export const globalReducer = appSlice.reducer;
 
 export const store = configureStore({
   reducer: {
-    app: reducer,
+    app: globalReducer,
   },
   middleware: (defaultMiddleware) => defaultMiddleware(),
 });
 
 type RootState = ReturnType<typeof store.getState>;
 type AppDispatch = typeof store.dispatch;
-export const useAppDispatch = (): AppDispatch => useDispatch<AppDispatch>();
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+export const useGlobalDispatch = (): AppDispatch => useDispatch<AppDispatch>();
+export const useGlobalSelector: TypedUseSelectorHook<RootState> = useSelector;

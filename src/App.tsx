@@ -1,5 +1,5 @@
-import { Sheet } from "@mui/joy";
+import { Pi } from "./Pi";
 
 export const App = () => {
-  return <Sheet>test</Sheet>;
+  return <Pi></Pi>;
 };
