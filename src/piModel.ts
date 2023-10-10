@@ -1,6 +1,7 @@
 import * as O from "fp-ts/Option";
 import { useReducer } from "react";
-import { Digit, KeycutAction, KeycutState } from "./types";
+import { PiAction, KeycutState, Config } from "./types";
+import { match } from "ts-pattern";
 
 export type PiState = {
   mode:
@@ -12,15 +13,8 @@ export type PiState = {
     currLocation: number;
   };
   keycut: O.Option<KeycutState>;
+  config: Config;
 };
-
-type PiAction =
-  | KeycutAction
-  | { kind: "enterDigit"; digit: Digit }
-  | { kind: "clearKeycut" }
-  | { kind: "startKeycut" }
-  | { kind: "executeKeycut" }
-  | { kind: "setKeycutParameters" };
 
 const initialState: PiState = {
   mode: {
@@ -32,8 +26,21 @@ const initialState: PiState = {
     currLocation: 0,
   },
   keycut: O.none,
+  config: {
+    showExtraDigitsCount: 4,
+    allowedQuizMistakes: 3,
+    groupings: [],
+  },
 };
 
-const reducer = (state: PiState, action: PiAction) => state;
+const reducer = (state: PiState, action: PiAction) =>
+  match(action)
+    .with({ kind: "clearKeycut" }, () =>
+      O.isSome(state.keycut) ? { ...state, keycut: O.none } : state
+    )
+    .with({ kind: "startKeycut" }, ({ keycut }) =>
+      O.isNone(state.keycut) ? { ...state, keycut } : state
+    )
+    .exhaustive();
 
 export const usePiReducer = () => useReducer(reducer, initialState);

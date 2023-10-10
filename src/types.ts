@@ -2,7 +2,7 @@ export type Direction = "left" | "right";
 
 export type Digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
-export type KeycutAction =
+export type PiAction =
   | { kind: "toggleMode" }
   | { kind: "restartQuiz" }
   | { kind: "toggleShowNextDigits" }
@@ -21,10 +21,17 @@ export type KeycutAction =
   | {
       kind: "goto";
       location: { kind: "location"; location: number } | { kind: "mark" };
-    };
+    }
+  | { kind: "enterDigit"; digit: Digit }
+  | { kind: "clearKeycut" }
+  | { kind: "startKeycut"; keycut: StatefulKeycut }
+  | { kind: "executeKeycut" }
+  | { kind: "setKeycutParameters" };
+
+export type StatefulKeycut = "move" | "setMark" | "goto";
 
 export type KeycutState = {
-  kind: "move" | "setMark" | "goto";
+  kind: StatefulKeycut;
   parameters: string;
 };
 
