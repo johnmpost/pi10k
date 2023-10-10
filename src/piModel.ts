@@ -46,6 +46,11 @@ const reducer = (state: PiState, action: PiAction) =>
         ? { ...state, keycut: { ...state.keycut, parameters: newParameters } }
         : state
     )
+    .with({ kind: "executeKeycut" }, () =>
+      O.isSome(state.keycut)
+        ? state // this should make a transformation based on the keycut
+        : state
+    )
     .exhaustive();
 
 export const usePiReducer = () => useReducer(reducer, initialState);
