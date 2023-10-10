@@ -41,6 +41,11 @@ const reducer = (state: PiState, action: PiAction) =>
     .with({ kind: "startKeycut" }, ({ keycut }) =>
       O.isNone(state.keycut) ? { ...state, keycut } : state
     )
+    .with({ kind: "setKeycutParameters" }, ({ newParameters }) =>
+      O.isSome(state.keycut)
+        ? { ...state, keycut: { ...state.keycut, parameters: newParameters } }
+        : state
+    )
     .exhaustive();
 
 export const usePiReducer = () => useReducer(reducer, initialState);

@@ -26,7 +26,7 @@ export type PiAction =
   | { kind: "clearKeycut" }
   | { kind: "startKeycut"; keycut: StatefulKeycut }
   | { kind: "executeKeycut" }
-  | { kind: "setKeycutParameters" };
+  | { kind: "setKeycutParameters"; newParameters: string };
 
 export type StatefulKeycut = "move" | "setMark" | "goto";
 
