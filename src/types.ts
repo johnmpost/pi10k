@@ -4,6 +4,8 @@ export type Unit = "digits" | "groups";
 
 export type Digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
+export type EnterDigit = { digit: Digit };
+
 export type Move = {
   count: number;
   direction: Direction;
@@ -20,27 +22,28 @@ export type Goto = {
   location: { kind: "location"; location: number } | { kind: "mark" };
 };
 
+export type StartKeycut = { keycut: StatefulKeycut };
+
+export type SetKeycutParameters = { newParameters: string };
+
 export type PiAction =
   | { kind: "toggleMode" }
   | { kind: "restartQuiz" }
   | { kind: "toggleShowNextDigits" }
-  | {
+  | ({
       kind: "move";
-      parameters: Move;
-    }
-  | {
+    } & Move)
+  | ({
       kind: "setMark";
-      parameters: SetMark;
-    }
-  | {
+    } & SetMark)
+  | ({
       kind: "goto";
-      parameters: Goto;
-    }
-  | { kind: "enterDigit"; digit: Digit }
+    } & Goto)
+  | ({ kind: "enterDigit" } & EnterDigit)
   | { kind: "clearKeycut" }
-  | { kind: "startKeycut"; keycut: StatefulKeycut }
+  | ({ kind: "startKeycut" } & StartKeycut)
   | { kind: "executeKeycut" }
-  | { kind: "setKeycutParameters"; newParameters: string };
+  | ({ kind: "setKeycutParameters" } & SetKeycutParameters);
 
 export type StatefulKeycut = "move" | "setMark" | "goto";
 

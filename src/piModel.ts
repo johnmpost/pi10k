@@ -4,11 +4,12 @@ import {
   PiAction,
   KeycutState,
   Config,
-  Digit,
-  StatefulKeycut,
   Move,
   Goto,
   SetMark,
+  EnterDigit,
+  StartKeycut,
+  SetKeycutParameters,
 } from "./types";
 import { match } from "ts-pattern";
 import { pipe } from "fp-ts/lib/function";
@@ -46,7 +47,7 @@ const initialState: PiState = {
 const clearKeycut = (state: PiState) =>
   O.isSome(state.keycut) ? { ...state, keycut: O.none } : state;
 
-const enterDigit = (state: PiState, digit: Digit) => state;
+const enterDigit = (state: PiState) => (digit: EnterDigit) => state;
 
 const executeKeycut = (state: PiState) =>
   pipe(
@@ -61,21 +62,25 @@ const executeKeycut = (state: PiState) =>
     O.getOrElse(() => state)
   );
 
-const move = (state: PiState, parameters: Move) => state;
+const move = (state: PiState) => (parameters: Move) => state;
 
-const goto = (state: PiState, parameters: Goto) => state;
+const goto = (state: PiState) => (parameters: Goto) => state;
 
-const setMark = (state: PiState, parameters: SetMark) => state;
+const setMark = (state: PiState) => (parameters: SetMark) => state;
 
-const startKeycut = (state: PiState, keycut: StatefulKeycut) =>
-  state.mode.kind === "practice" && O.isNone(state.keycut)
-    ? { ...state, keycut: O.some({ kind: keycut, parameters: "" }) }
-    : state;
+const startKeycut =
+  (state: PiState) =>
+  ({ keycut }: StartKeycut) =>
+    state.mode.kind === "practice" && O.isNone(state.keycut)
+      ? { ...state, keycut: O.some({ kind: keycut, parameters: "" }) }
+      : state;
 
-const setKeycutParameters = (state: PiState, newParameters: string) =>
-  O.isSome(state.keycut)
-    ? { ...state, keycut: { ...state.keycut, parameters: newParameters } }
-    : state;
+const setKeycutParameters =
+  (state: PiState) =>
+  ({ newParameters }: SetKeycutParameters) =>
+    O.isSome(state.keycut)
+      ? { ...state, keycut: { ...state.keycut, parameters: newParameters } }
+      : state;
 
 const toggleMode = (state: PiState): PiState =>
   state.mode.kind === "quiz"
@@ -101,18 +106,16 @@ const toggleShowNextDigits = (state: PiState): PiState =>
 const reducer = (state: PiState, action: PiAction): PiState =>
   match(action)
     .with({ kind: "clearKeycut" }, () => clearKeycut(state))
-    .with({ kind: "startKeycut" }, ({ keycut }) => startKeycut(state, keycut))
-    .with({ kind: "setKeycutParameters" }, ({ newParameters }) =>
-      setKeycutParameters(state, newParameters)
-    )
+    .with({ kind: "startKeycut" }, startKeycut(state))
+    .with({ kind: "setKeycutParameters" }, setKeycutParameters(state))
     .with({ kind: "executeKeycut" }, () => executeKeycut(state))
     .with({ kind: "toggleMode" }, () => toggleMode(state))
     .with({ kind: "restartQuiz" }, () => restartQuiz(state))
     .with({ kind: "toggleShowNextDigits" }, () => toggleShowNextDigits(state))
-    .with({ kind: "enterDigit" }, ({ digit }) => enterDigit(state, digit))
-    .with({ kind: "move" }, ({ parameters }) => move(state, parameters))
-    .with({ kind: "goto" }, ({ parameters }) => goto(state, parameters))
-    .with({ kind: "setMark" }, ({ parameters }) => setMark(state, parameters))
+    .with({ kind: "enterDigit" }, enterDigit(state))
+    .with({ kind: "move" }, move(state))
+    .with({ kind: "goto" }, goto(state))
+    .with({ kind: "setMark" }, setMark(state))
     .exhaustive();
 
 export const usePiReducer = () => useReducer(reducer, initialState);
