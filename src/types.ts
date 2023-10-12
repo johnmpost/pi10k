@@ -28,19 +28,6 @@ export type StartKeycut = { keycut: StatefulKeycut };
 
 export type SetKeycutParameters = { newParameters: string };
 
-export type PiState = {
-  mode:
-    | { kind: "practice" }
-    | { kind: "quiz"; mistakesMade: number; currLocation: number };
-  practice: {
-    nextDigitsVisibility: "show" | "hide";
-    markLocation: O.Option<number>;
-    currLocation: number;
-  };
-  keycut: O.Option<KeycutState>;
-  config: Config;
-};
-
 export type PiAction =
   | { kind: "toggleMode" }
   | { kind: "restartQuiz" }
@@ -76,4 +63,17 @@ export type Config = {
   showExtraDigitsCount: number;
   allowedQuizMistakes: number;
   groupings: Grouping[];
+};
+
+export type PiState = {
+  mode:
+    | { kind: "practice" }
+    | { kind: "quiz"; mistakesMade: number; currLocation: number };
+  practice: {
+    nextDigitsVisibility: "show" | "hide";
+    markLocation: O.Option<number>;
+    currLocation: number;
+  };
+  keycut: O.Option<KeycutState>;
+  config: Config;
 };
