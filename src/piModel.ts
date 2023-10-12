@@ -6,16 +6,12 @@ import {
   Config,
   Digit,
   StatefulKeycut,
-  Unit,
-  Direction,
   Move,
   Goto,
   SetMark,
 } from "./types";
 import { match } from "ts-pattern";
 import { pipe } from "fp-ts/lib/function";
-import { state } from "fp-ts";
-import { getTooltipUtilityClass } from "@mui/joy";
 
 export type PiState = {
   mode:
@@ -47,6 +43,9 @@ const initialState: PiState = {
   },
 };
 
+const clearKeycut = (state: PiState) =>
+  O.isSome(state.keycut) ? { ...state, keycut: O.none } : state;
+
 const enterDigit = (state: PiState, digit: Digit) => state;
 
 const executeKeycut = (state: PiState) =>
@@ -68,63 +67,48 @@ const goto = (state: PiState, parameters: Goto) => state;
 
 const setMark = (state: PiState, parameters: SetMark) => state;
 
-const startKeycut = (state: PiState, keycut: StatefulKeycut) => state;
+const startKeycut = (state: PiState, keycut: StatefulKeycut) =>
+  state.mode.kind === "practice" && O.isNone(state.keycut)
+    ? { ...state, keycut: O.some({ kind: keycut, parameters: "" }) }
+    : state;
 
-const setKeycutParameters = (state: PiState, newParameters: string) => state;
+const setKeycutParameters = (state: PiState, newParameters: string) =>
+  O.isSome(state.keycut)
+    ? { ...state, keycut: { ...state.keycut, parameters: newParameters } }
+    : state;
 
-const toggleMode = (state: PiState) => state;
+const toggleMode = (state: PiState): PiState =>
+  state.mode.kind === "quiz"
+    ? { ...state, mode: { kind: "practice" } }
+    : { ...state, mode: { kind: "quiz", mistakesMade: 0, currLocation: 0 } };
 
-const restartQuiz = (state: PiState) => state;
+const restartQuiz = (state: PiState) =>
+  state.mode.kind === "quiz"
+    ? {
+        ...state,
+        mode: { ...state.mode, currLocation: 0, mistakesMade: 0 },
+      }
+    : state;
 
-const toggleShowNextDigits = (state: PiState) => state;
+const toggleShowNextDigits = (state: PiState): PiState =>
+  state.mode.kind === "practice"
+    ? {
+        ...state,
+        practice: { ...state.practice, nextDigitsVisibility: "show" },
+      }
+    : state;
 
 const reducer = (state: PiState, action: PiAction): PiState =>
   match(action)
-    .with({ kind: "clearKeycut" }, () =>
-      O.isSome(state.keycut) ? { ...state, keycut: O.none } : state
-    )
-    .with(
-      { kind: "startKeycut" },
-      ({ keycut }) => startKeycut(state, keycut)
-      // state.mode.kind === "practice" && O.isNone(state.keycut)
-      //   ? { ...state, keycut: O.some({ kind: keycut, parameters: "" }) }
-      //   : state
-    )
-    .with(
-      { kind: "setKeycutParameters" },
-      ({ newParameters }) => setKeycutParameters(state, newParameters)
-      // O.isSome(state.keycut)
-      //   ? { ...state, keycut: { ...state.keycut, parameters: newParameters } }
-      //   : state
+    .with({ kind: "clearKeycut" }, () => clearKeycut(state))
+    .with({ kind: "startKeycut" }, ({ keycut }) => startKeycut(state, keycut))
+    .with({ kind: "setKeycutParameters" }, ({ newParameters }) =>
+      setKeycutParameters(state, newParameters)
     )
     .with({ kind: "executeKeycut" }, () => executeKeycut(state))
-    .with(
-      { kind: "toggleMode" },
-      () => toggleMode(state)
-      // state.mode.kind === "quiz"
-      //   ? { ...state, mode: { kind: "practice" } }
-      //   : { ...state, mode: { kind: "quiz", mistakesMade: 0, currLocation: 0 } }
-    )
-    .with(
-      { kind: "restartQuiz" },
-      () => restartQuiz(state)
-      // state.mode.kind === "quiz"
-      //   ? {
-      //       ...state,
-      //       mode: { ...state.mode, currLocation: 0, mistakesMade: 0 },
-      //     }
-      //   : state
-    )
-    .with(
-      { kind: "toggleShowNextDigits" },
-      () => toggleShowNextDigits(state)
-      // state.mode.kind === "practice"
-      //   ? {
-      //       ...state,
-      //       practice: { ...state.practice, nextDigitsVisibility: "show" },
-      //     }
-      //   : state
-    )
+    .with({ kind: "toggleMode" }, () => toggleMode(state))
+    .with({ kind: "restartQuiz" }, () => restartQuiz(state))
+    .with({ kind: "toggleShowNextDigits" }, () => toggleShowNextDigits(state))
     .with({ kind: "enterDigit" }, ({ digit }) => enterDigit(state, digit))
     .with({ kind: "move" }, ({ parameters }) => move(state, parameters))
     .with({ kind: "goto" }, ({ parameters }) => goto(state, parameters))
