@@ -12,6 +12,7 @@ import {
 } from "./types";
 import { match } from "ts-pattern";
 import { pipe } from "fp-ts/lib/function";
+import * as pi from "./pi";
 
 const initialState: PiState = {
   mode: {
@@ -33,7 +34,22 @@ const initialState: PiState = {
 const clearKeycut = (state: PiState) =>
   O.isSome(state.keycut) ? { ...state, keycut: O.none } : state;
 
-const enterDigit = (state: PiState) => (digit: EnterDigit) => state;
+const enterDigit =
+  (state: PiState) =>
+  ({ digit }: EnterDigit): PiState =>
+    state.mode.kind === "practice"
+      ? (() => {
+          const nextLocation = state.practice.currLocation + 1;
+          const expectedNextDigit = pi.digits[nextLocation];
+          const digitIsCorrect = digit === expectedNextDigit;
+          return digitIsCorrect
+            ? {
+                ...state,
+                practice: { ...state.practice, currLocation: nextLocation },
+              }
+            : state;
+        })()
+      : state;
 
 const executeKeycut = (state: PiState) =>
   pipe(
