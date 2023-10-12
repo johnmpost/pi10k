@@ -2,30 +2,16 @@ import * as O from "fp-ts/Option";
 import { useReducer } from "react";
 import {
   PiAction,
-  KeycutState,
-  Config,
   Move,
   Goto,
   SetMark,
   EnterDigit,
   StartKeycut,
   SetKeycutParameters,
+  PiState,
 } from "./types";
 import { match } from "ts-pattern";
 import { pipe } from "fp-ts/lib/function";
-
-export type PiState = {
-  mode:
-    | { kind: "practice" }
-    | { kind: "quiz"; mistakesMade: number; currLocation: number };
-  practice: {
-    nextDigitsVisibility: "show" | "hide";
-    markLocation: O.Option<number>;
-    currLocation: number;
-  };
-  keycut: O.Option<KeycutState>;
-  config: Config;
-};
 
 const initialState: PiState = {
   mode: {
