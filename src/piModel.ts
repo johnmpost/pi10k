@@ -42,7 +42,11 @@ const nextDigitIsCorrect = (currLocation: number, attemptedDigit: Digit) => {
   return digitIsCorrect;
 };
 
+const quizHasFailed = (mistakesMade: number) => (mistakesAllowed: number) =>
+  mistakesMade > mistakesAllowed;
+
 const enterDigit =
+  (allowedQuizMistakes: number) =>
   (state: PiState) =>
   ({ digit }: EnterDigit): PiState =>
     state.mode.kind === "practice"
@@ -55,7 +59,17 @@ const enterDigit =
             },
           }
         : state
-      : state;
+      : quizHasFailed(state.mode.mistakesMade)(allowedQuizMistakes)
+      ? state
+      : nextDigitIsCorrect(state.mode.currLocation, digit)
+      ? {
+          ...state,
+          mode: { ...state.mode, currLocation: state.mode.currLocation + 1 },
+        }
+      : {
+          ...state,
+          mode: { ...state.mode, mistakesMade: state.mode.mistakesMade + 1 },
+        };
 
 const executeKeycut = (state: PiState) =>
   pipe(
@@ -120,7 +134,7 @@ const reducer = (state: PiState, action: PiAction): PiState =>
     .with({ kind: "toggleMode" }, () => toggleMode(state))
     .with({ kind: "restartQuiz" }, () => restartQuiz(state))
     .with({ kind: "toggleShowNextDigits" }, () => toggleShowNextDigits(state))
-    .with({ kind: "enterDigit" }, enterDigit(state))
+    .with({ kind: "enterDigit" }, enterDigit(2)(state))
     .with({ kind: "move" }, move(state))
     .with({ kind: "goto" }, goto(state))
     .with({ kind: "setMark" }, setMark(state))
