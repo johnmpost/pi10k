@@ -4,25 +4,37 @@ export type Unit = "digits" | "groups";
 
 export type Digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
+export type Move = {
+  count: number;
+  direction: Direction;
+  units: Unit;
+};
+
+export type SetMark = {
+  location:
+    | { kind: "currentLocation" }
+    | { kind: "atLocation"; location: number };
+};
+
+export type Goto = {
+  location: { kind: "location"; location: number } | { kind: "mark" };
+};
+
 export type PiAction =
   | { kind: "toggleMode" }
   | { kind: "restartQuiz" }
   | { kind: "toggleShowNextDigits" }
   | {
       kind: "move";
-      count: number;
-      direction: Direction;
-      units: Unit;
+      parameters: Move;
     }
   | {
       kind: "setMark";
-      location:
-        | { kind: "currentLocation" }
-        | { kind: "atLocation"; location: number };
+      parameters: SetMark;
     }
   | {
       kind: "goto";
-      location: { kind: "location"; location: number } | { kind: "mark" };
+      parameters: Goto;
     }
   | { kind: "enterDigit"; digit: Digit }
   | { kind: "clearKeycut" }
