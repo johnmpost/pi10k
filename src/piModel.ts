@@ -9,6 +9,7 @@ import {
   StartKeycut,
   SetKeycutParameters,
   PiState,
+  Digit,
 } from "./types";
 import { match } from "ts-pattern";
 import { pipe } from "fp-ts/lib/function";
@@ -34,21 +35,26 @@ const initialState: PiState = {
 const clearKeycut = (state: PiState) =>
   O.isSome(state.keycut) ? { ...state, keycut: O.none } : state;
 
+const nextDigitIsCorrect = (currLocation: number, attemptedDigit: Digit) => {
+  const nextLocation = currLocation + 1;
+  const expectedNextDigit = pi.digits[nextLocation];
+  const digitIsCorrect = attemptedDigit === expectedNextDigit;
+  return digitIsCorrect;
+};
+
 const enterDigit =
   (state: PiState) =>
   ({ digit }: EnterDigit): PiState =>
     state.mode.kind === "practice"
-      ? (() => {
-          const nextLocation = state.practice.currLocation + 1;
-          const expectedNextDigit = pi.digits[nextLocation];
-          const digitIsCorrect = digit === expectedNextDigit;
-          return digitIsCorrect
-            ? {
-                ...state,
-                practice: { ...state.practice, currLocation: nextLocation },
-              }
-            : state;
-        })()
+      ? nextDigitIsCorrect(state.practice.currLocation, digit)
+        ? {
+            ...state,
+            practice: {
+              ...state.practice,
+              currLocation: state.practice.currLocation + 1,
+            },
+          }
+        : state
       : state;
 
 const executeKeycut = (state: PiState) =>
