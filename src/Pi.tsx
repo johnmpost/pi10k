@@ -83,10 +83,7 @@ export const Pi = () => {
                 .exhaustive()}
             </Typography>
           </Stack>
-          <Typography fontFamily="monospace" fontSize={64}>
-            ^
-          </Typography>
-          <Typography>{getCurrLocation(state)}</Typography>
+          <Typography fontSize={24}>{getCurrLocation(state)}</Typography>
         </Stack>
       </Sheet>
     </div>
