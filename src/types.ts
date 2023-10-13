@@ -74,5 +74,4 @@ export type PiState = {
     currLocation: number;
   };
   keycut: O.Option<KeycutState>;
-  config: Config;
 };

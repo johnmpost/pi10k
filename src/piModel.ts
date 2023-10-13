@@ -9,6 +9,7 @@ import {
   StartKeycut,
   SetKeycutParameters,
   PiState,
+  Config,
 } from "./types";
 import { match } from "ts-pattern";
 import { flow, pipe } from "fp-ts/lib/function";
@@ -18,6 +19,7 @@ import {
   parseSetMarkParameters,
   quizHasFailed,
 } from "./utils";
+import { useGlobalSelector } from "./globalState";
 
 const initialState: PiState = {
   mode: {
@@ -29,11 +31,6 @@ const initialState: PiState = {
     currLocation: 0,
   },
   keycut: O.none,
-  config: {
-    showExtraDigitsCount: 4,
-    allowedQuizMistakes: 3,
-    groupings: [],
-  },
 };
 
 const clearKeycut = (state: PiState) =>
@@ -165,19 +162,28 @@ const toggleShowNextDigits = (state: PiState): PiState =>
       }
     : state;
 
-const reducer = (state: PiState, action: PiAction): PiState =>
-  match(action)
-    .with({ kind: "clearKeycut" }, () => clearKeycut(state))
-    .with({ kind: "startKeycut" }, startKeycut(state))
-    .with({ kind: "setKeycutParameters" }, setKeycutParameters(state))
-    .with({ kind: "executeKeycut" }, () => executeKeycut(state))
-    .with({ kind: "toggleMode" }, () => toggleMode(state))
-    .with({ kind: "restartQuiz" }, () => restartQuiz(state))
-    .with({ kind: "toggleShowNextDigits" }, () => toggleShowNextDigits(state))
-    .with({ kind: "enterDigit" }, enterDigit(2)(state))
-    .with({ kind: "move" }, move(state))
-    .with({ kind: "goto" }, goto(state))
-    .with({ kind: "setMark" }, setMark(state))
-    .exhaustive();
+const reducer =
+  (config: Config) =>
+  (state: PiState, action: PiAction): PiState =>
+    match(action)
+      .with({ kind: "clearKeycut" }, () => clearKeycut(state))
+      .with({ kind: "startKeycut" }, startKeycut(state))
+      .with({ kind: "setKeycutParameters" }, setKeycutParameters(state))
+      .with({ kind: "executeKeycut" }, () => executeKeycut(state))
+      .with({ kind: "toggleMode" }, () => toggleMode(state))
+      .with({ kind: "restartQuiz" }, () => restartQuiz(state))
+      .with({ kind: "toggleShowNextDigits" }, () => toggleShowNextDigits(state))
+      .with(
+        { kind: "enterDigit" },
+        enterDigit(config.allowedQuizMistakes)(state)
+      )
+      .with({ kind: "move" }, move(state))
+      .with({ kind: "goto" }, goto(state))
+      .with({ kind: "setMark" }, setMark(state))
+      .exhaustive();
 
-export const usePiReducer = () => useReducer(reducer, initialState);
+export const usePiReducer = () => {
+  const config = useGlobalSelector((state) => state.app.config);
+
+  return useReducer(reducer(config), initialState);
+};
