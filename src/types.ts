@@ -70,7 +70,7 @@ export type PiState = {
     | { kind: "quiz"; mistakesMade: number; currLocation: number };
   practice: {
     nextDigitsVisibility: "show" | "hide";
-    markLocation: O.Option<number>;
+    markLocation: number;
     currLocation: number;
   };
   keycut: O.Option<KeycutState>;

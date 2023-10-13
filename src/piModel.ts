@@ -25,7 +25,7 @@ const initialState: PiState = {
   },
   practice: {
     nextDigitsVisibility: "show",
-    markLocation: O.none,
+    markLocation: 0,
     currLocation: 0,
   },
   keycut: O.none,
@@ -83,7 +83,22 @@ const executeKeycut = (state: PiState) =>
 
 const move = (state: PiState) => (parameters: Move) => state;
 
-const goto = (state: PiState) => (parameters: Goto) => state;
+const goto =
+  (state: PiState) =>
+  (parameters: Goto): PiState =>
+    match(parameters.location)
+      .with({ kind: "location" }, ({ location }) => ({
+        ...state,
+        practice: { ...state.practice, currLocation: location },
+      }))
+      .with({ kind: "mark" }, () => ({
+        ...state,
+        practice: {
+          ...state.practice,
+          currLocation: state.practice.markLocation,
+        },
+      }))
+      .exhaustive();
 
 const setMark = (state: PiState) => (parameters: SetMark) => state;
 
