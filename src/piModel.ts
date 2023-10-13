@@ -13,13 +13,13 @@ import {
 } from "./types";
 import { match } from "ts-pattern";
 import { flow, pipe } from "fp-ts/lib/function";
+import { useGlobalSelector } from "./globalState";
 import {
   nextDigitIsCorrect,
+  quizHasFailed,
   parseGotoParameters,
   parseSetMarkParameters,
-  quizHasFailed,
-} from "./utils";
-import { useGlobalSelector } from "./globalState";
+} from "./piModelUtils";
 
 const initialState: PiState = {
   mode: {
