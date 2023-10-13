@@ -81,7 +81,22 @@ const executeKeycut = (state: PiState) =>
     O.getOrElse(() => state)
   );
 
-const move = (state: PiState) => (parameters: Move) => state;
+const move = (state: PiState) => (parameters: Move) => {
+  return match(parameters.units)
+    .with("digits", () => ({
+      ...state,
+      practice: {
+        ...state.practice,
+        currLocation:
+          state.practice.currLocation +
+          (parameters.direction === "left" ? -1 : 1),
+      },
+    }))
+    .with("groups", () => {
+      throw Error("moving by groups not yet implemented");
+    })
+    .exhaustive();
+};
 
 const goto =
   (state: PiState) =>
