@@ -75,6 +75,7 @@ export const Pi = () => {
         () =>
           match(e.key)
             .with("Escape", createDispatch({ kind: "clearKeycut" }))
+            .with("Enter", createDispatch({ kind: "executeKeycut" }))
             .otherwise(() => () => {})
       )
     )();

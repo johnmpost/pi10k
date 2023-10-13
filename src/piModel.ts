@@ -152,7 +152,13 @@ const setKeycutParameters =
   (state: PiState) =>
   ({ newParameters }: SetKeycutParameters) =>
     O.isSome(state.keycut)
-      ? { ...state, keycut: { ...state.keycut, parameters: newParameters } }
+      ? {
+          ...state,
+          keycut: O.some({
+            kind: state.keycut.value.kind,
+            parameters: newParameters,
+          }),
+        }
       : state;
 
 const toggleMode = (state: PiState): PiState =>
