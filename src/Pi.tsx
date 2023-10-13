@@ -1,10 +1,11 @@
 import { Sheet } from "@mui/joy";
 import { usePiReducer } from "./piModel";
-import { match } from "ts-pattern";
+import { P, match } from "ts-pattern";
 import { hotkeys } from "./constants";
 import { PiAction } from "./types";
 import * as O from "fp-ts/Option";
-import { pipe } from "fp-ts/lib/function";
+import { flow, pipe } from "fp-ts/lib/function";
+import { isDigit, stringToDigit, throwIfNone } from "./utils";
 
 export const Pi = () => {
   const [state, dispatch] = usePiReducer();
@@ -61,6 +62,14 @@ export const Pi = () => {
                 direction: "right",
                 units: "groups",
               })
+            )
+            .with(
+              P.when(isDigit),
+              (digitStr) => () =>
+                dispatch({
+                  kind: "enterDigit",
+                  digit: flow(stringToDigit, throwIfNone)(digitStr),
+                })
             )
             .otherwise(() => () => {}),
         () =>
