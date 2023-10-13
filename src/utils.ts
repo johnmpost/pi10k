@@ -37,10 +37,6 @@ export const parseGotoParameters = ({
   parameters,
 }: KeycutState): O.Option<Goto> => O.none;
 
-export const parseMoveParameters = ({
-  parameters,
-}: KeycutState): O.Option<Move> => O.none;
-
 export const parseSetMarkParameters = ({
   parameters,
 }: KeycutState): O.Option<SetMark> => O.none;

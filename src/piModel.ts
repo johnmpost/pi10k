@@ -15,7 +15,6 @@ import { flow, pipe } from "fp-ts/lib/function";
 import {
   nextDigitIsCorrect,
   parseGotoParameters,
-  parseMoveParameters,
   parseSetMarkParameters,
   quizHasFailed,
 } from "./utils";
@@ -72,7 +71,6 @@ const executeKeycut = (state: PiState) =>
     O.chain((keycutState) =>
       match(keycutState)
         .with({ kind: "goto" }, flow(parseGotoParameters, O.map(goto(state))))
-        .with({ kind: "move" }, flow(parseMoveParameters, O.map(move(state))))
         .with(
           { kind: "setMark" },
           flow(parseSetMarkParameters, O.map(setMark(state)))

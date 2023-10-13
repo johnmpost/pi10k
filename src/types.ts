@@ -9,7 +9,6 @@ export type Digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 export type EnterDigit = { digit: Digit };
 
 export type Move = {
-  count: number;
   direction: Direction;
   units: Unit;
 };
@@ -47,7 +46,7 @@ export type PiAction =
   | { kind: "executeKeycut" }
   | ({ kind: "setKeycutParameters" } & SetKeycutParameters);
 
-export type StatefulKeycut = "move" | "setMark" | "goto";
+export type StatefulKeycut = "setMark" | "goto";
 
 export type KeycutState = {
   kind: StatefulKeycut;
