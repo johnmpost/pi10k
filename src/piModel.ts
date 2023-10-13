@@ -101,7 +101,7 @@ const move = (state: PiState) => (parameters: Move) =>
           };
         })
         .with("groups", () => {
-          console.error("moving by groups not yet implemented");
+          console.warn("moving by groups not yet implemented");
           return state;
         })
         .exhaustive()
