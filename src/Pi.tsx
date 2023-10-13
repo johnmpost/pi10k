@@ -5,7 +5,13 @@ import { hotkeys } from "./constants";
 import { PiAction } from "./types";
 import * as O from "fp-ts/Option";
 import { flow, pipe } from "fp-ts/lib/function";
-import { isDigit, stringToDigit, throwIfNone } from "./utils";
+import {
+  backspace,
+  isDigit,
+  isOneCharacter,
+  stringToDigit,
+  throwIfNone,
+} from "./utils";
 
 export const Pi = () => {
   const [state, dispatch] = usePiReducer();
@@ -72,10 +78,25 @@ export const Pi = () => {
                 })
             )
             .otherwise(() => () => {}),
-        () =>
+        (keycut) =>
           match(e.key)
             .with("Escape", createDispatch({ kind: "clearKeycut" }))
             .with("Enter", createDispatch({ kind: "executeKeycut" }))
+            .with(
+              "Backspace",
+              createDispatch({
+                kind: "setKeycutParameters",
+                newParameters: backspace(keycut.parameters),
+              })
+            )
+            .with(
+              P.when(isOneCharacter),
+              (digitStr) => () =>
+                dispatch({
+                  kind: "setKeycutParameters",
+                  newParameters: keycut.parameters + digitStr,
+                })
+            )
             .otherwise(() => () => {})
       )
     )();
