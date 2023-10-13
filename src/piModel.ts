@@ -20,6 +20,7 @@ import {
   parseGotoParameters,
   parseSetMarkParameters,
 } from "./piModelUtils";
+import * as pi from "./pi";
 
 const initialState: PiState = {
   mode: {
@@ -78,22 +79,35 @@ const executeKeycut = (state: PiState) =>
     O.getOrElse(() => state)
   );
 
-const move = (state: PiState) => (parameters: Move) => {
-  return match(parameters.units)
-    .with("digits", () => ({
-      ...state,
-      practice: {
-        ...state.practice,
-        currLocation:
-          state.practice.currLocation +
-          (parameters.direction === "left" ? -1 : 1),
-      },
-    }))
-    .with("groups", () => {
-      throw Error("moving by groups not yet implemented");
-    })
+const move = (state: PiState) => (parameters: Move) =>
+  match(state.mode)
+    .with({ kind: "practice" }, () =>
+      match(parameters.units)
+        .with("digits", () => {
+          const locationAfterMove =
+            state.practice.currLocation +
+            (parameters.direction === "left" ? -1 : 1);
+          const isInRange =
+            locationAfterMove >= 0 && locationAfterMove <= pi.maxLocation;
+          const newLocation = isInRange
+            ? locationAfterMove
+            : state.practice.currLocation;
+          return {
+            ...state,
+            practice: {
+              ...state.practice,
+              currLocation: newLocation,
+            },
+          };
+        })
+        .with("groups", () => {
+          console.error("moving by groups not yet implemented");
+          return state;
+        })
+        .exhaustive()
+    )
+    .with({ kind: "quiz" }, () => state)
     .exhaustive();
-};
 
 const goto =
   (state: PiState) =>
