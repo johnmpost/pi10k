@@ -18,8 +18,8 @@ export const nextDigitIsCorrect = (
   return digitIsCorrect;
 };
 
-const isMark = gotoMarkParam.test;
-const isPositiveInt = /^[0-9]*$/.test;
+const isMark = (str: string) => gotoMarkParam.test(str);
+const isPositiveInt = (str: string) => /^[0-9]*$/.test(str);
 const isInRange = (num: number) => num <= pi.maxLocation;
 const isLocation = (str: string) =>
   isPositiveInt(str) && isInRange(parseInt(str));
@@ -36,7 +36,8 @@ export const parseGotoParameters = ({
     )
     .otherwise(() => O.none);
 
-const isCurrentLocation = setMarkCurrentLocationParam.test;
+const isCurrentLocation = (str: string) =>
+  setMarkCurrentLocationParam.test(str);
 
 export const parseSetMarkParameters = ({
   parameters,

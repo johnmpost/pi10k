@@ -10,7 +10,7 @@ export const throwIfNone = <T>(opt: O.Option<T>) =>
     })
   );
 
-const isDigit = /^[0-9]$/.test;
+const isDigit = (str: string) => /^[0-9]$/.test(str);
 
 export const stringToDigit = flow(
   O.fromPredicate(isDigit),
