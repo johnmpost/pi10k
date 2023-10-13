@@ -100,7 +100,20 @@ const goto =
       }))
       .exhaustive();
 
-const setMark = (state: PiState) => (parameters: SetMark) => state;
+const setMark = (state: PiState) => (parameters: SetMark) =>
+  match(parameters.location)
+    .with({ kind: "atLocation" }, ({ location }) => ({
+      ...state,
+      practice: { ...state.practice, markLocation: location },
+    }))
+    .with({ kind: "currentLocation" }, () => ({
+      ...state,
+      practice: {
+        ...state.practice,
+        markLocation: state.practice.currLocation,
+      },
+    }))
+    .exhaustive();
 
 const startKeycut =
   (state: PiState) =>
