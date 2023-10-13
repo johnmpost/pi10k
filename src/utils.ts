@@ -11,7 +11,7 @@ export const throwIfNone = <T>(opt: O.Option<T>) =>
     })
   );
 
-const isDigit = (str: string) => /^[0-9]$/.test(str);
+const isDigit = /^[0-9]$/.test;
 
 export const stringToDigit = flow(
   O.fromPredicate(isDigit),
@@ -33,10 +33,14 @@ export const nextDigitIsCorrect = (
   return digitIsCorrect;
 };
 
+// g:g = go to mark
+// g:{num} = go to {num} location
 export const parseGotoParameters = ({
   parameters,
 }: KeycutState): O.Option<Goto> => O.none;
 
+// s:s = set mark at current location
+// s:{num} = set mark at {num} location
 export const parseSetMarkParameters = ({
   parameters,
 }: KeycutState): O.Option<SetMark> => O.none;
