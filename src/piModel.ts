@@ -163,7 +163,7 @@ const toggleShowNextDigits = (state: PiState): PiState =>
     : state;
 
 const reducer =
-  (config: Config) =>
+  ({ allowedQuizMistakes }: Config) =>
   (state: PiState, action: PiAction): PiState =>
     match(action)
       .with({ kind: "clearKeycut" }, () => clearKeycut(state))
@@ -173,10 +173,7 @@ const reducer =
       .with({ kind: "toggleMode" }, () => toggleMode(state))
       .with({ kind: "restartQuiz" }, () => restartQuiz(state))
       .with({ kind: "toggleShowNextDigits" }, () => toggleShowNextDigits(state))
-      .with(
-        { kind: "enterDigit" },
-        enterDigit(config.allowedQuizMistakes)(state)
-      )
+      .with({ kind: "enterDigit" }, enterDigit(allowedQuizMistakes)(state))
       .with({ kind: "move" }, move(state))
       .with({ kind: "goto" }, goto(state))
       .with({ kind: "setMark" }, setMark(state))
