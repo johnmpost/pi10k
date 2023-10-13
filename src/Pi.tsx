@@ -3,6 +3,8 @@ import { usePiReducer } from "./piModel";
 import { handleKeypress } from "./piKeypressHandler";
 import { Digit } from "./types";
 import * as pi from "./pi";
+import { useGlobalSelector } from "./globalState";
+import { match } from "ts-pattern";
 
 const showPi = (
   location: number,
@@ -31,8 +33,18 @@ const showPi = (
 
 export const Pi = () => {
   const [state, dispatch] = usePiReducer();
+  const showExtraDigitsCount = useGlobalSelector(
+    (x) => x.app.config.showExtraDigitsCount
+  );
 
-  const shownPi = showPi(state.practice.currLocation, 3, pi.digits);
+  const shownPi = showPi(
+    match(state.mode)
+      .with({ kind: "practice" }, () => state.practice.currLocation)
+      .with({ kind: "quiz" }, ({ currLocation }) => currLocation)
+      .exhaustive(),
+    showExtraDigitsCount,
+    pi.digits
+  );
 
   return (
     <div
@@ -54,7 +66,14 @@ export const Pi = () => {
             {shownPi.center}
           </Typography>
           <Typography component="pre" fontFamily="monospace" fontSize={64}>
-            {shownPi.right}
+            {match(state.mode)
+              .with({ kind: "practice" }, () =>
+                state.practice.showNextDigits
+                  ? shownPi.right
+                  : shownPi.right.map((_) => " ")
+              )
+              .with({ kind: "quiz" }, () => shownPi.right.map((_) => " "))
+              .exhaustive()}
           </Typography>
         </Stack>
         <Stack direction="row" alignItems="center" justifyContent="center">
