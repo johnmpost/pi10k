@@ -1,6 +1,8 @@
-import { Digit } from "./types";
+import { Digit, StatefulKeycut } from "./types";
 import * as O from "fp-ts/Option";
 import { flow, pipe } from "fp-ts/lib/function";
+import { match } from "ts-pattern";
+import { hotkeys } from "./constants";
 
 export const throwIfNone = <T>(opt: O.Option<T>) =>
   pipe(
@@ -21,4 +23,10 @@ export const stringToDigit = flow(
 );
 
 export const backspace = (str: string) =>
-  str.length === 0 ? str : str.substring(0, str.length - 2);
+  str.length === 0 ? str : str.substring(0, str.length - 1);
+
+export const statefulKeycutToString = (keycut: StatefulKeycut) =>
+  match(keycut)
+    .with("goto", () => hotkeys.startGotoKeycut)
+    .with("setMark", () => hotkeys.startSetMarkKeycut)
+    .exhaustive();

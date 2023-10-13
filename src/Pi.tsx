@@ -1,10 +1,12 @@
 import { Sheet, Stack, Typography } from "@mui/joy";
 import { usePiReducer } from "./piModel";
 import { handleKeypress } from "./piKeypressHandler";
-import { Digit } from "./types";
+import { Digit, KeycutState, PiState } from "./types";
 import * as pi from "./pi";
 import { useGlobalSelector } from "./globalState";
 import { match } from "ts-pattern";
+import * as O from "fp-ts/Option";
+import { statefulKeycutToString } from "./utils";
 
 const showPi = (
   location: number,
@@ -31,17 +33,24 @@ const showPi = (
   };
 };
 
+const getCurrLocation = (state: PiState) =>
+  match(state.mode)
+    .with({ kind: "practice" }, () => state.practice.currLocation)
+    .with({ kind: "quiz" }, ({ currLocation }) => currLocation)
+    .exhaustive();
+
+const displayKeycut = O.match<KeycutState, string>(
+  () => " ",
+  (keycut) => `${statefulKeycutToString(keycut.kind)}:${keycut.parameters}`
+);
+
 export const Pi = () => {
   const [state, dispatch] = usePiReducer();
   const showExtraDigitsCount = useGlobalSelector(
     (x) => x.app.config.showExtraDigitsCount
   );
-
   const shownPi = showPi(
-    match(state.mode)
-      .with({ kind: "practice" }, () => state.practice.currLocation)
-      .with({ kind: "quiz" }, ({ currLocation }) => currLocation)
-      .exhaustive(),
+    getCurrLocation(state),
     showExtraDigitsCount,
     pi.digits
   );
@@ -53,33 +62,31 @@ export const Pi = () => {
       tabIndex={-1}
     >
       <Sheet sx={{ height: "100%" }}>
-        <pre style={{ margin: 0 }}>{`state: ${JSON.stringify(
-          state,
-          null,
-          2
-        )}`}</pre>
-        <Stack direction="row" alignItems="center" justifyContent="center">
-          <Typography component="pre" fontFamily="monospace" fontSize={64}>
-            {shownPi.left}
-          </Typography>
-          <Typography component="pre" fontFamily="monospace" fontSize={64}>
-            {shownPi.center}
-          </Typography>
-          <Typography component="pre" fontFamily="monospace" fontSize={64}>
-            {match(state.mode)
-              .with({ kind: "practice" }, () =>
-                state.practice.showNextDigits
-                  ? shownPi.right
-                  : shownPi.right.map((_) => " ")
-              )
-              .with({ kind: "quiz" }, () => shownPi.right.map((_) => " "))
-              .exhaustive()}
-          </Typography>
-        </Stack>
-        <Stack direction="row" alignItems="center" justifyContent="center">
+        <Typography>{state.mode.kind}</Typography>
+        <Stack direction="column" alignItems="center">
+          <Typography component="pre">{displayKeycut(state.keycut)}</Typography>
+          <Stack direction="row" alignItems="center" justifyContent="center">
+            <Typography component="pre" fontFamily="monospace" fontSize={64}>
+              {shownPi.left}
+            </Typography>
+            <Typography component="pre" fontFamily="monospace" fontSize={64}>
+              {shownPi.center}
+            </Typography>
+            <Typography component="pre" fontFamily="monospace" fontSize={64}>
+              {match(state.mode)
+                .with({ kind: "practice" }, () =>
+                  state.practice.showNextDigits
+                    ? shownPi.right
+                    : shownPi.right.map((_) => " ")
+                )
+                .with({ kind: "quiz" }, () => shownPi.right.map((_) => " "))
+                .exhaustive()}
+            </Typography>
+          </Stack>
           <Typography fontFamily="monospace" fontSize={64}>
             ^
           </Typography>
+          <Typography>{getCurrLocation(state)}</Typography>
         </Stack>
       </Sheet>
     </div>
