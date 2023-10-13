@@ -9,11 +9,16 @@ import {
   StartKeycut,
   SetKeycutParameters,
   PiState,
-  Digit,
 } from "./types";
 import { match } from "ts-pattern";
-import { pipe } from "fp-ts/lib/function";
-import * as pi from "./pi";
+import { flow, pipe } from "fp-ts/lib/function";
+import {
+  nextDigitIsCorrect,
+  parseGotoParameters,
+  parseMoveParameters,
+  parseSetMarkParameters,
+  quizHasFailed,
+} from "./utils";
 
 const initialState: PiState = {
   mode: {
@@ -34,16 +39,6 @@ const initialState: PiState = {
 
 const clearKeycut = (state: PiState) =>
   O.isSome(state.keycut) ? { ...state, keycut: O.none } : state;
-
-const nextDigitIsCorrect = (currLocation: number, attemptedDigit: Digit) => {
-  const nextLocation = currLocation + 1;
-  const expectedNextDigit = pi.digits[nextLocation];
-  const digitIsCorrect = attemptedDigit === expectedNextDigit;
-  return digitIsCorrect;
-};
-
-const quizHasFailed = (mistakesMade: number) => (mistakesAllowed: number) =>
-  mistakesMade > mistakesAllowed;
 
 const enterDigit =
   (allowedQuizMistakes: number) =>
@@ -74,13 +69,17 @@ const enterDigit =
 const executeKeycut = (state: PiState) =>
   pipe(
     state.keycut,
-    O.map((keycutState) =>
+    O.chain((keycutState) =>
       match(keycutState)
-        .with({ kind: "goto" }, () => state)
-        .with({ kind: "move" }, () => state)
-        .with({ kind: "setMark" }, () => state)
+        .with({ kind: "goto" }, flow(parseGotoParameters, O.map(goto(state))))
+        .with({ kind: "move" }, flow(parseMoveParameters, O.map(move(state))))
+        .with(
+          { kind: "setMark" },
+          flow(parseSetMarkParameters, O.map(setMark(state)))
+        )
         .exhaustive()
     ),
+    O.map((state) => ({ ...state, keycut: O.none })),
     O.getOrElse(() => state)
   );
 
