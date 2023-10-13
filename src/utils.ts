@@ -1,7 +1,9 @@
-import { Digit, Goto, KeycutState, Move, SetMark } from "./types";
+import { Digit, Goto, KeycutState, SetMark } from "./types";
 import * as O from "fp-ts/Option";
 import { flow, pipe } from "fp-ts/lib/function";
 import * as pi from "./pi";
+import { match } from "ts-pattern";
+import { gotoMarkParam, setMarkCurrentLocationParam } from "./constants";
 
 export const throwIfNone = <T>(opt: O.Option<T>) =>
   pipe(
@@ -33,14 +35,39 @@ export const nextDigitIsCorrect = (
   return digitIsCorrect;
 };
 
-// g:g = go to mark
-// g:{num} = go to {num} location
+const isMark = gotoMarkParam.test;
+const isPositiveInt = /^[0-9]*$/.test;
+const isInRange = (num: number) => num <= pi.maxLocation;
+const isLocation = (str: string) =>
+  isPositiveInt(str) && isInRange(parseInt(str));
+
 export const parseGotoParameters = ({
   parameters,
-}: KeycutState): O.Option<Goto> => O.none;
+}: KeycutState): O.Option<Goto> =>
+  match(parameters)
+    .when(isMark, () => O.some({ location: { kind: "mark" as const } }))
+    .when(isLocation, () =>
+      O.some({
+        location: { kind: "location" as const, location: parseInt(parameters) },
+      })
+    )
+    .otherwise(() => O.none);
 
-// s:s = set mark at current location
-// s:{num} = set mark at {num} location
+const isCurrentLocation = setMarkCurrentLocationParam.test;
+
 export const parseSetMarkParameters = ({
   parameters,
-}: KeycutState): O.Option<SetMark> => O.none;
+}: KeycutState): O.Option<SetMark> =>
+  match(parameters)
+    .when(isCurrentLocation, () =>
+      O.some({ location: { kind: "currentLocation" as const } })
+    )
+    .when(isLocation, () =>
+      O.some({
+        location: {
+          kind: "atLocation" as const,
+          location: parseInt(parameters),
+        },
+      })
+    )
+    .otherwise(() => O.none);
