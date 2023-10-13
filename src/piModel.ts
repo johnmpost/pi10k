@@ -26,7 +26,7 @@ const initialState: PiState = {
     kind: "practice",
   },
   practice: {
-    nextDigitsVisibility: "show",
+    showNextDigits: true,
     markLocation: 0,
     currLocation: 0,
   },
@@ -158,7 +158,10 @@ const toggleShowNextDigits = (state: PiState): PiState =>
   state.mode.kind === "practice"
     ? {
         ...state,
-        practice: { ...state.practice, nextDigitsVisibility: "show" },
+        practice: {
+          ...state.practice,
+          showNextDigits: !state.practice.showNextDigits,
+        },
       }
     : state;
 

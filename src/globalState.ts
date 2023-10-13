@@ -10,6 +10,7 @@ const initialState: GlobalState = {
     showExtraDigitsCount: 4,
     allowedQuizMistakes: 3,
     groupings: [],
+    showPreviousDigits: true,
   },
 };
 

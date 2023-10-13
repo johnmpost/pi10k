@@ -62,6 +62,7 @@ export type Config = {
   showExtraDigitsCount: number;
   allowedQuizMistakes: number;
   groupings: Grouping[];
+  showPreviousDigits: boolean;
 };
 
 export type PiState = {
@@ -69,7 +70,7 @@ export type PiState = {
     | { kind: "practice" }
     | { kind: "quiz"; mistakesMade: number; currLocation: number };
   practice: {
-    nextDigitsVisibility: "show" | "hide";
+    showNextDigits: boolean;
     markLocation: number;
     currLocation: number;
   };
