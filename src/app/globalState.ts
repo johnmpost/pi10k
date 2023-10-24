@@ -14,18 +14,15 @@ const initialState: GlobalState = {
   },
 };
 
-export const appSlice = createSlice({
+const appSlice = createSlice({
   name: "app",
   initialState,
   reducers: {},
 });
 
-export const {} = appSlice;
-export const globalReducer = appSlice.reducer;
-
 export const store = configureStore({
   reducer: {
-    app: globalReducer,
+    app: appSlice.reducer,
   },
   middleware: (defaultMiddleware) => defaultMiddleware(),
 });
