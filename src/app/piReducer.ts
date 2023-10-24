@@ -19,7 +19,7 @@ import {
   parseGotoParameters,
   parseSetMarkParameters,
 } from "./piModelUtils";
-import * as pi from "./pi";
+import * as pi from "./piDigits";
 import { O } from "../fp-ts-exports";
 
 const initialState: PiState = {

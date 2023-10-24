@@ -1,8 +1,8 @@
 import { Sheet, Stack, Typography } from "@mui/joy";
-import { usePiReducer } from "./piModel";
+import { usePiReducer } from "./piReducer";
 import { handleKeypress } from "./piKeypressHandler";
 import { Digit, KeycutState, PiState } from "./types";
-import * as pi from "./pi";
+import * as pi from "./piDigits";
 import { useGlobalSelector } from "./globalState";
 import { match } from "ts-pattern";
 import { O } from "../fp-ts-exports";

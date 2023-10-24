@@ -1,7 +1,7 @@
 import { match } from "ts-pattern";
 import { gotoMarkParam, setMarkCurrentLocationParam } from "./constants";
 import { Digit, KeycutState, Goto, SetMark } from "./types";
-import * as pi from "./pi";
+import * as pi from "./piDigits";
 import { O } from "../fp-ts-exports";
 
 export const quizHasFailed =
