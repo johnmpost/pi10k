@@ -5,7 +5,7 @@ import { Digit, KeycutState, PiState } from "./types";
 import * as pi from "./pi";
 import { useGlobalSelector } from "./globalState";
 import { match } from "ts-pattern";
-import * as O from "fp-ts/Option";
+import { O } from "../fp-ts-exports";
 import { statefulKeycutToString } from "./utils";
 
 const showPi = (

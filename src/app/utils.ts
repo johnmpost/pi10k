@@ -1,5 +1,5 @@
 import { Digit, StatefulKeycut } from "./types";
-import * as O from "fp-ts/Option";
+import { O } from "../fp-ts-exports";
 import { flow, pipe } from "fp-ts/lib/function";
 import { match } from "ts-pattern";
 import { hotkeys } from "./constants";

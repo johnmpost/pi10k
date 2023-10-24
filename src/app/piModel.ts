@@ -1,4 +1,3 @@
-import * as O from "fp-ts/Option";
 import { useReducer } from "react";
 import {
   PiAction,
@@ -21,6 +20,7 @@ import {
   parseSetMarkParameters,
 } from "./piModelUtils";
 import * as pi from "./pi";
+import { O } from "../fp-ts-exports";
 
 const initialState: PiState = {
   mode: {
