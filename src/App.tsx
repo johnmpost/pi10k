@@ -3,7 +3,7 @@ import { Pi } from "./app/Pi";
 
 export const App = () => {
   return (
-    <CssVarsProvider>
+    <CssVarsProvider defaultMode="dark">
       <CssBaseline />
       <Pi></Pi>
     </CssVarsProvider>
