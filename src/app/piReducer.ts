@@ -18,7 +18,7 @@ import {
   quizHasFailed,
   parseGotoParameters,
   parseSetMarkParameters,
-} from "./piModelUtils";
+} from "./utils";
 import * as pi from "./piDigits";
 import { O } from "../fp-ts-exports";
 
