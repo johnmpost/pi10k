@@ -8,8 +8,8 @@ import {
   isDigit,
   isOneCharacter,
   stringToDigit,
-  throwIfNone,
-} from "./utils";
+  unsafeUnwrap,
+} from "./pureUtils";
 
 export const handleKeypress =
   (state: PiState, dispatch: React.Dispatch<PiAction>) =>
@@ -71,7 +71,7 @@ export const handleKeypress =
               (digitStr) => () =>
                 dispatch({
                   kind: "enterDigit",
-                  digit: flow(stringToDigit, throwIfNone)(digitStr),
+                  digit: flow(stringToDigit, unsafeUnwrap)(digitStr),
                 })
             )
             .otherwise(() => () => {}),

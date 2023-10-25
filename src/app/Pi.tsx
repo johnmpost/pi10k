@@ -6,7 +6,7 @@ import * as pi from "./piDigits";
 import { useGlobalSelector } from "./globalState";
 import { match } from "ts-pattern";
 import { O } from "../fp-ts-exports";
-import { statefulKeycutToString } from "./utils";
+import { statefulKeycutToString } from "./piUtils";
 
 const showPi = (
   location: number,
