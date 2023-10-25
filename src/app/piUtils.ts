@@ -4,10 +4,17 @@ import {
   gotoMarkParam,
   setMarkCurrentLocationParam,
 } from "./constants";
-import { Digit, StatefulKeycut, KeycutState, Goto, SetMark } from "./types";
+import {
+  Digit,
+  StatefulKeycut,
+  KeycutState,
+  Goto,
+  SetMark,
+  PiState,
+} from "./types";
 import * as pi from "./piDigits";
 import { O } from "../fp-ts-exports";
-import { regexTest } from "./pureUtils";
+import { regexTest, toString } from "./pureUtils";
 
 export const statefulKeycutToString = (keycut: StatefulKeycut) =>
   match(keycut)
@@ -67,3 +74,35 @@ export const parseSetMarkParameters = ({
       })
     )
     .otherwise(() => O.none);
+
+export const showPi = (
+  location: number,
+  showExtraDigitsCount: number,
+  digits: Digit[]
+) => {
+  const padding = " ".repeat(showExtraDigitsCount).split("");
+  const paddedDigits = [...padding, ...digits.map(toString), ...padding];
+  const adjustedCenter = location + showExtraDigitsCount;
+  return {
+    left: paddedDigits.slice(
+      adjustedCenter - showExtraDigitsCount,
+      adjustedCenter
+    ),
+    center: paddedDigits[location + showExtraDigitsCount],
+    right: paddedDigits.slice(
+      adjustedCenter + 1,
+      adjustedCenter + showExtraDigitsCount + 1
+    ),
+  };
+};
+
+export const getCurrLocation = (state: PiState) =>
+  match(state.mode)
+    .with({ kind: "practice" }, () => state.practice.currLocation)
+    .with({ kind: "quiz" }, ({ currLocation }) => currLocation)
+    .exhaustive();
+
+export const displayKeycut = O.match<KeycutState, string>(
+  () => " ",
+  (keycut) => `${statefulKeycutToString(keycut.kind)}:${keycut.parameters}`
+);

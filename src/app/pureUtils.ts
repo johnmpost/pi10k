@@ -24,3 +24,6 @@ export const stringToDigit = flow(
 
 export const backspace = (str: string) =>
   str.length === 0 ? str : str.substring(0, str.length - 1);
+
+export const toString = <T extends { toString(): string }>(value: T) =>
+  value.toString();

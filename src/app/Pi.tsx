@@ -1,48 +1,10 @@
 import { Sheet, Stack, Typography } from "@mui/joy";
 import { usePiReducer } from "./piReducer";
 import { handleKeypress } from "./piKeypressHandler";
-import { Digit, KeycutState, PiState } from "./types";
 import * as pi from "./piDigits";
 import { useGlobalSelector } from "./globalState";
 import { match } from "ts-pattern";
-import { O } from "../fp-ts-exports";
-import { statefulKeycutToString } from "./piUtils";
-
-const showPi = (
-  location: number,
-  showExtraDigitsCount: number,
-  digits: Digit[]
-) => {
-  const padding = " ".repeat(showExtraDigitsCount).split("");
-  const paddedDigits = [
-    ...padding,
-    ...digits.map((x) => x.toString()),
-    ...padding,
-  ];
-  const adjustedCenter = location + showExtraDigitsCount;
-  return {
-    left: paddedDigits.slice(
-      adjustedCenter - showExtraDigitsCount,
-      adjustedCenter
-    ),
-    center: paddedDigits[location + showExtraDigitsCount],
-    right: paddedDigits.slice(
-      adjustedCenter + 1,
-      adjustedCenter + showExtraDigitsCount + 1
-    ),
-  };
-};
-
-const getCurrLocation = (state: PiState) =>
-  match(state.mode)
-    .with({ kind: "practice" }, () => state.practice.currLocation)
-    .with({ kind: "quiz" }, ({ currLocation }) => currLocation)
-    .exhaustive();
-
-const displayKeycut = O.match<KeycutState, string>(
-  () => " ",
-  (keycut) => `${statefulKeycutToString(keycut.kind)}:${keycut.parameters}`
-);
+import { showPi, getCurrLocation, displayKeycut } from "./piUtils";
 
 export const Pi = () => {
   const [state, dispatch] = usePiReducer();
