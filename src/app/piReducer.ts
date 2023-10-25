@@ -18,8 +18,8 @@ import {
   quizHasFailed,
   parseGotoParameters,
   parseSetMarkParameters,
+  locationInBounds,
 } from "./piUtils";
-import * as pi from "./piDigits";
 import { O } from "../fp-ts-exports";
 
 const initialState: PiState = {
@@ -87,9 +87,7 @@ const move = (state: PiState) => (parameters: Move) =>
           const locationAfterMove =
             state.practice.currLocation +
             (parameters.direction === "left" ? -1 : 1);
-          const isInRange =
-            locationAfterMove >= 0 && locationAfterMove <= pi.digits.length - 1;
-          const newLocation = isInRange
+          const newLocation = locationInBounds(locationAfterMove)
             ? locationAfterMove
             : state.practice.currLocation;
           return {

@@ -1,9 +1,13 @@
 import { match } from "ts-pattern";
-import { hotkeys } from "./constants";
-import { gotoMarkParam, setMarkCurrentLocationParam } from "./constants";
+import {
+  hotkeys,
+  gotoMarkParam,
+  setMarkCurrentLocationParam,
+} from "./constants";
 import { Digit, StatefulKeycut, KeycutState, Goto, SetMark } from "./types";
 import * as pi from "./piDigits";
 import { O } from "../fp-ts-exports";
+import { regexTest } from "./pureUtils";
 
 export const statefulKeycutToString = (keycut: StatefulKeycut) =>
   match(keycut)
@@ -25,11 +29,13 @@ export const nextDigitIsCorrect = (
   return digitIsCorrect;
 };
 
-const isMark = (str: string) => gotoMarkParam.test(str);
-const isPositiveInt = (str: string) => /^[0-9]*$/.test(str);
-const isInRange = (num: number) => num <= pi.digits.length - 1;
+export const locationInBounds = (location: number) =>
+  location >= 0 && location < pi.digits.length;
+
+const isMark = regexTest(gotoMarkParam);
+const isPositiveInt = regexTest(/^[0-9]*$/);
 const isLocation = (str: string) =>
-  isPositiveInt(str) && isInRange(parseInt(str));
+  isPositiveInt(str) && locationInBounds(parseInt(str));
 
 export const parseGotoParameters = ({
   parameters,
@@ -43,8 +49,7 @@ export const parseGotoParameters = ({
     )
     .otherwise(() => O.none);
 
-const isCurrentLocation = (str: string) =>
-  setMarkCurrentLocationParam.test(str);
+const isCurrentLocation = regexTest(setMarkCurrentLocationParam);
 
 export const parseSetMarkParameters = ({
   parameters,
