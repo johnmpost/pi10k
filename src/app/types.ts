@@ -68,7 +68,12 @@ export type Config = {
 export type PiState = {
   mode:
     | { kind: "practice" }
-    | { kind: "quiz"; mistakesMade: number; currLocation: number };
+    | {
+        kind: "quiz";
+        mistakesMade: number;
+        currLocation: number;
+        lastEntryWasMistake: boolean;
+      };
   practice: {
     showNextDigits: boolean;
     markLocation: number;

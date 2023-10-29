@@ -56,11 +56,19 @@ const enterDigit =
       : nextDigitIsCorrect(state.mode.currLocation, digit)
       ? {
           ...state,
-          mode: { ...state.mode, currLocation: state.mode.currLocation + 1 },
+          mode: {
+            ...state.mode,
+            currLocation: state.mode.currLocation + 1,
+            lastEntryWasMistake: false,
+          },
         }
       : {
           ...state,
-          mode: { ...state.mode, mistakesMade: state.mode.mistakesMade + 1 },
+          mode: {
+            ...state.mode,
+            mistakesMade: state.mode.mistakesMade + 1,
+            lastEntryWasMistake: true,
+          },
         };
 
 const executeKeycut = (state: PiState) =>
@@ -162,7 +170,15 @@ const setKeycutParameters =
 const toggleMode = (state: PiState): PiState =>
   state.mode.kind === "quiz"
     ? { ...state, mode: { kind: "practice" } }
-    : { ...state, mode: { kind: "quiz", mistakesMade: 0, currLocation: 0 } };
+    : {
+        ...state,
+        mode: {
+          kind: "quiz",
+          mistakesMade: 0,
+          currLocation: 0,
+          lastEntryWasMistake: false,
+        },
+      };
 
 const restartQuiz = (state: PiState) =>
   state.mode.kind === "quiz"

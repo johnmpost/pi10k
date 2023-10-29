@@ -3,17 +3,14 @@ import { usePiReducer } from "./piReducer";
 import { handleKeypress } from "./piKeypressHandler";
 import * as pi from "./piDigits";
 import { useGlobalSelector } from "./globalState";
-import { match } from "ts-pattern";
 import { showPi, getCurrLocation, displayKeycut } from "./piUtils";
 
 export const Pi = () => {
   const [state, dispatch] = usePiReducer();
-  const showExtraDigitsCount = useGlobalSelector(
-    (x) => x.app.config.showExtraDigitsCount
-  );
+  const config = useGlobalSelector((x) => x.app.config);
   const shownPi = showPi(
     getCurrLocation(state),
-    showExtraDigitsCount,
+    config.showExtraDigitsCount,
     pi.digits
   );
 
@@ -24,7 +21,14 @@ export const Pi = () => {
       tabIndex={-1}
     >
       <Sheet sx={{ height: "100%" }}>
-        <Typography>{state.mode.kind}</Typography>
+        <Typography level="h1">
+          {state.mode.kind === "practice" ? "Practice Mode" : "Quiz Mode"}
+        </Typography>
+        <Typography level="h4" component="pre">
+          {state.mode.kind === "quiz"
+            ? `Mistakes: ${state.mode.mistakesMade}`
+            : " "}
+        </Typography>
         <Stack direction="column" alignItems="center">
           <Typography component="pre">{displayKeycut(state.keycut)}</Typography>
           <Stack direction="row" alignItems="center" justifyContent="center">
@@ -34,16 +38,24 @@ export const Pi = () => {
             <Typography component="pre" fontFamily="monospace" fontSize={64}>
               {shownPi.center}
             </Typography>
-            <Typography component="pre" fontFamily="monospace" fontSize={64}>
-              {match(state.mode)
-                .with({ kind: "practice" }, () =>
-                  state.practice.showNextDigits
-                    ? shownPi.right
-                    : shownPi.right.map((_) => " ")
-                )
-                .with({ kind: "quiz" }, () => shownPi.right.map((_) => " "))
-                .exhaustive()}
-            </Typography>
+            {state.mode.kind === "practice" ? (
+              <Typography component="pre" fontFamily="monospace" fontSize={64}>
+                {state.practice.showNextDigits
+                  ? shownPi.right
+                  : " ".repeat(config.showExtraDigitsCount)}
+              </Typography>
+            ) : (
+              <Typography
+                component="pre"
+                fontFamily="monospace"
+                fontSize={64}
+                color="danger"
+              >
+                {`${state.mode.lastEntryWasMistake ? "?" : " "}${" ".repeat(
+                  config.showExtraDigitsCount - 1
+                )}`}
+              </Typography>
+            )}
           </Stack>
           <Typography fontSize={24}>{getCurrLocation(state)}</Typography>
         </Stack>
