@@ -1,5 +1,5 @@
 import { CssBaseline, CssVarsProvider } from "@mui/joy";
-import { Pi } from "./app/Pi";
+import { Pi } from "./app/PiDisplay";
 
 export const App = () => {
   return (
