@@ -14,7 +14,7 @@ import {
 } from "./types";
 import * as pi from "./piDigits";
 import { O } from "../fp-ts-exports";
-import { regexTest, toString } from "./pureUtils";
+import { isPositiveInt, regexTest, toString } from "./pureUtils";
 
 export const statefulKeycutToString = (keycut: StatefulKeycut) =>
   match(keycut)
@@ -40,7 +40,6 @@ export const locationInBounds = (location: number) =>
   location >= 0 && location < pi.digits.length;
 
 const isMark = regexTest(gotoMarkParam);
-const isPositiveInt = regexTest(/^[0-9]*$/);
 const isLocation = (str: string) =>
   isPositiveInt(str) && locationInBounds(parseInt(str));
 

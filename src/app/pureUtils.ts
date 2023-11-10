@@ -15,6 +15,7 @@ export const unsafeUnwrap = <T>(opt: O.Option<T>) =>
 export const regexTest = (regex: RegExp) => (str: string) => regex.test(str);
 export const isDigit = regexTest(/^[0-9]$/);
 export const isOneCharacter = regexTest(/^.$/);
+export const isPositiveInt = regexTest(/^[0-9]*$/);
 
 export const stringToDigit = flow(
   O.fromPredicate(isDigit),
