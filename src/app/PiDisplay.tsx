@@ -1,12 +1,12 @@
 import { Sheet, Stack, Typography } from "@mui/joy";
-import { usePiReducer } from "./piReducer";
+import { usePiReactogen } from "./piReducer";
 import { handleKeypress } from "./piKeypressHandler";
 import * as pi from "./piDigits";
 import { useGlobalSelector } from "./globalState";
 import { showPi, getCurrLocation, displayKeycut } from "./piUtils";
 
 export const Pi = () => {
-  const [state, dispatch] = usePiReducer();
+  const { state, invoke } = usePiReactogen();
   const config = useGlobalSelector((x) => x.app.config);
   const shownPi = showPi(
     getCurrLocation(state),
@@ -17,7 +17,7 @@ export const Pi = () => {
   return (
     <div
       style={{ height: "100vh" }}
-      onKeyDown={handleKeypress(state, dispatch)}
+      onKeyDown={handleKeypress(state, invoke)}
       tabIndex={-1}
     >
       <Sheet sx={{ height: "100%" }}>

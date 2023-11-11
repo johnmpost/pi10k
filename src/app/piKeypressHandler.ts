@@ -12,31 +12,31 @@ import {
 } from "./pureUtils";
 
 export const handleKeypress =
-  (state: PiState, dispatch: React.Dispatch<PiAction>) =>
+  (state: PiState, invoke: (action: PiAction) => void) =>
   (e: React.KeyboardEvent<HTMLDivElement>) => {
-    const createDispatch = (action: PiAction) => () => () => dispatch(action);
+    const createInvoke = (action: PiAction) => () => () => invoke(action);
     return pipe(
       state.keycut,
       O.match(
         () =>
           match(e.key)
-            .with(hotkeys.toggleMode, createDispatch({ kind: "toggleMode" }))
-            .with(hotkeys.restartQuiz, createDispatch({ kind: "restartQuiz" }))
+            .with(hotkeys.toggleMode, createInvoke({ kind: "toggleMode" }))
+            .with(hotkeys.restartQuiz, createInvoke({ kind: "restartQuiz" }))
             .with(
               hotkeys.toggleShowNextDigits,
-              createDispatch({ kind: "toggleShowNextDigits" })
+              createInvoke({ kind: "toggleShowNextDigits" })
             )
             .with(
               hotkeys.startGotoKeycut,
-              createDispatch({ kind: "startKeycut", keycut: "goto" })
+              createInvoke({ kind: "startKeycut", keycut: "goto" })
             )
             .with(
               hotkeys.startSetMarkKeycut,
-              createDispatch({ kind: "startKeycut", keycut: "setMark" })
+              createInvoke({ kind: "startKeycut", keycut: "setMark" })
             )
             .with(
               hotkeys.moveLeftOneDigit,
-              createDispatch({
+              createInvoke({
                 kind: "move",
                 direction: "left",
                 units: "digits",
@@ -44,7 +44,7 @@ export const handleKeypress =
             )
             .with(
               hotkeys.moveRightOneDigit,
-              createDispatch({
+              createInvoke({
                 kind: "move",
                 direction: "right",
                 units: "digits",
@@ -52,7 +52,7 @@ export const handleKeypress =
             )
             .with(
               hotkeys.moveLeftOneGroup,
-              createDispatch({
+              createInvoke({
                 kind: "move",
                 direction: "left",
                 units: "groups",
@@ -60,7 +60,7 @@ export const handleKeypress =
             )
             .with(
               hotkeys.moveRightOneGroup,
-              createDispatch({
+              createInvoke({
                 kind: "move",
                 direction: "right",
                 units: "groups",
@@ -69,7 +69,7 @@ export const handleKeypress =
             .with(
               P.when(isDigit),
               (digitStr) => () =>
-                dispatch({
+                invoke({
                   kind: "enterDigit",
                   digit: flow(stringToDigit, unsafeUnwrap)(digitStr),
                 })
@@ -77,11 +77,11 @@ export const handleKeypress =
             .otherwise(() => () => {}),
         (keycut) =>
           match(e.key)
-            .with("Escape", createDispatch({ kind: "clearKeycut" }))
-            .with("Enter", createDispatch({ kind: "executeKeycut" }))
+            .with("Escape", createInvoke({ kind: "clearKeycut" }))
+            .with("Enter", createInvoke({ kind: "executeKeycut" }))
             .with(
               "Backspace",
-              createDispatch({
+              createInvoke({
                 kind: "setKeycutParameters",
                 newParameters: backspace(keycut.parameters),
               })
@@ -89,7 +89,7 @@ export const handleKeypress =
             .with(
               P.when(isOneCharacter),
               (digitStr) => () =>
-                dispatch({
+                invoke({
                   kind: "setKeycutParameters",
                   newParameters: keycut.parameters + digitStr,
                 })

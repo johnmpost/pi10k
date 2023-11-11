@@ -1,4 +1,3 @@
-import { useReducer } from "react";
 import {
   PiAction,
   Move,
@@ -21,6 +20,7 @@ import {
   locationInBounds,
 } from "./piUtils";
 import { O } from "../fp-ts-exports";
+import { ActionHandler, useReactogen } from "./useReactogen";
 
 const initialState: PiState = {
   mode: {
@@ -39,8 +39,8 @@ const clearKeycut = (state: PiState) =>
 
 const enterDigit =
   (allowedQuizMistakes: number) =>
+  ({ digit }: EnterDigit) =>
   (state: PiState) =>
-  ({ digit }: EnterDigit): PiState =>
     state.mode.kind === "practice"
       ? nextDigitIsCorrect(state.practice.currLocation, digit)
         ? {
@@ -76,10 +76,19 @@ const executeKeycut = (state: PiState) =>
     state.keycut,
     O.chain((keycutState) =>
       match(keycutState)
-        .with({ kind: "goto" }, flow(parseGotoParameters, O.map(goto(state))))
+        .with(
+          { kind: "goto" },
+          flow(
+            parseGotoParameters,
+            O.map((x) => goto(x)(state))
+          )
+        )
         .with(
           { kind: "setMark" },
-          flow(parseSetMarkParameters, O.map(setMark(state)))
+          flow(
+            parseSetMarkParameters,
+            O.map((x) => setMark(x)(state))
+          )
         )
         .exhaustive()
     ),
@@ -87,7 +96,7 @@ const executeKeycut = (state: PiState) =>
     O.getOrElse(() => state)
   );
 
-const move = (state: PiState) => (parameters: Move) =>
+const move = (parameters: Move) => (state: PiState) =>
   match(state.mode)
     .with({ kind: "practice" }, () =>
       match(parameters.units)
@@ -115,24 +124,22 @@ const move = (state: PiState) => (parameters: Move) =>
     .with({ kind: "quiz" }, () => state)
     .exhaustive();
 
-const goto =
-  (state: PiState) =>
-  (parameters: Goto): PiState =>
-    match(parameters.location)
-      .with({ kind: "location" }, ({ location }) => ({
-        ...state,
-        practice: { ...state.practice, currLocation: location },
-      }))
-      .with({ kind: "mark" }, () => ({
-        ...state,
-        practice: {
-          ...state.practice,
-          currLocation: state.practice.markLocation,
-        },
-      }))
-      .exhaustive();
+const goto = (parameters: Goto) => (state: PiState) =>
+  match(parameters.location)
+    .with({ kind: "location" }, ({ location }) => ({
+      ...state,
+      practice: { ...state.practice, currLocation: location },
+    }))
+    .with({ kind: "mark" }, () => ({
+      ...state,
+      practice: {
+        ...state.practice,
+        currLocation: state.practice.markLocation,
+      },
+    }))
+    .exhaustive();
 
-const setMark = (state: PiState) => (parameters: SetMark) =>
+const setMark = (parameters: SetMark) => (state: PiState) =>
   match(parameters.location)
     .with({ kind: "atLocation" }, ({ location }) => ({
       ...state,
@@ -148,15 +155,15 @@ const setMark = (state: PiState) => (parameters: SetMark) =>
     .exhaustive();
 
 const startKeycut =
-  (state: PiState) =>
   ({ keycut }: StartKeycut) =>
+  (state: PiState) =>
     state.mode.kind === "practice" && O.isNone(state.keycut)
       ? { ...state, keycut: O.some({ kind: keycut, parameters: "" }) }
       : state;
 
 const setKeycutParameters =
-  (state: PiState) =>
   ({ newParameters }: SetKeycutParameters) =>
+  (state: PiState) =>
     O.isSome(state.keycut)
       ? {
           ...state,
@@ -188,7 +195,7 @@ const restartQuiz = (state: PiState) =>
       }
     : state;
 
-const toggleShowNextDigits = (state: PiState): PiState =>
+const toggleShowNextDigits = (state: PiState) =>
   state.mode.kind === "practice"
     ? {
         ...state,
@@ -199,25 +206,42 @@ const toggleShowNextDigits = (state: PiState): PiState =>
       }
     : state;
 
-const reducer =
-  ({ allowedQuizMistakes }: Config) =>
-  (state: PiState, action: PiAction): PiState =>
+const handleAction =
+  ({ allowedQuizMistakes }: Config): ActionHandler<PiState, PiAction> =>
+  (setState) =>
+  (action) =>
+  (_) =>
     match(action)
-      .with({ kind: "clearKeycut" }, () => clearKeycut(state))
-      .with({ kind: "startKeycut" }, startKeycut(state))
-      .with({ kind: "setKeycutParameters" }, setKeycutParameters(state))
-      .with({ kind: "executeKeycut" }, () => executeKeycut(state))
-      .with({ kind: "toggleMode" }, () => toggleMode(state))
-      .with({ kind: "restartQuiz" }, () => restartQuiz(state))
-      .with({ kind: "toggleShowNextDigits" }, () => toggleShowNextDigits(state))
-      .with({ kind: "enterDigit" }, enterDigit(allowedQuizMistakes)(state))
-      .with({ kind: "move" }, move(state))
-      .with({ kind: "goto" }, goto(state))
-      .with({ kind: "setMark" }, setMark(state))
+      .with({ kind: "clearKeycut" }, () => () => setState(clearKeycut))
+      .with(
+        { kind: "startKeycut" },
+        (action) => () => setState(startKeycut(action))
+      )
+      .with(
+        { kind: "setKeycutParameters" },
+        (action) => () => setState(setKeycutParameters(action))
+      )
+      .with(
+        { kind: "executeKeycut" },
+        () => () => setState((s) => executeKeycut(s))
+      )
+      .with({ kind: "toggleMode" }, () => () => setState(toggleMode))
+      .with({ kind: "restartQuiz" }, () => () => setState(restartQuiz))
+      .with(
+        { kind: "toggleShowNextDigits" },
+        () => () => setState(toggleShowNextDigits)
+      )
+      .with(
+        { kind: "enterDigit" },
+        (action) => () => setState(enterDigit(allowedQuizMistakes)(action))
+      )
+      .with({ kind: "move" }, (action) => () => setState(move(action)))
+      .with({ kind: "goto" }, (action) => () => setState(goto(action)))
+      .with({ kind: "setMark" }, (action) => () => setState(setMark(action)))
       .exhaustive();
 
-export const usePiReducer = () => {
+export const usePiReactogen = () => {
   const config = useGlobalSelector((state) => state.app.config);
 
-  return useReducer(reducer(config), initialState);
+  return useReactogen(initialState, handleAction(config));
 };
