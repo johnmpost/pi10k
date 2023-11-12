@@ -1,0 +1,8 @@
+.error  {
+    transition: opacity 1s ease-out;
+    opacity: 1;
+}
+
+.error.fade-out {
+    opacity: 0;
+}

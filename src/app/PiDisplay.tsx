@@ -4,8 +4,11 @@ import { handleKeypress } from "./piKeypressHandler";
 import * as pi from "./piDigits";
 import { useGlobalSelector } from "./globalState";
 import { showPi, getCurrLocation, displayKeycut } from "./piUtils";
+import { useState } from "react";
+import "./test.css";
 
 export const Pi = () => {
+  const [opacity, setOpacity] = useState<0 | 1>(0);
   const { state, invoke } = usePiReactogen();
   const config = useGlobalSelector((x) => x.app.config);
   const shownPi = showPi(
@@ -20,6 +23,14 @@ export const Pi = () => {
       onKeyDown={handleKeypress(state, invoke)}
       tabIndex={-1}
     >
+      <button
+        onClick={async () => {
+          setOpacity(1);
+          setOpacity(0);
+        }}
+      >
+        click
+      </button>
       <Sheet sx={{ height: "100%" }}>
         <Typography level="h1">
           {state.mode.kind === "practice" ? "Practice Mode" : "Quiz Mode"}
@@ -50,8 +61,9 @@ export const Pi = () => {
                 fontFamily="monospace"
                 fontSize={64}
                 color="danger"
+                className={`error ${opacity === 0 ? "fade-out" : ""}`}
               >
-                {`${state.mode.lastEntryWasMistake ? "?" : " "}${" ".repeat(
+                {`${state.mode.lastEntryWasMistake ? "X" : "X"}${" ".repeat(
                   config.showExtraDigitsCount - 1
                 )}`}
               </Typography>
