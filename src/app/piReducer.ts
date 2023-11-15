@@ -11,7 +11,6 @@ import {
 } from "./types";
 import { match } from "ts-pattern";
 import { flow, pipe } from "fp-ts/lib/function";
-import { useGlobalSelector } from "./globalState";
 import {
   nextDigitIsCorrect,
   quizHasFailed,
@@ -22,6 +21,7 @@ import {
 import { O } from "../fp-ts-exports";
 import { ActionHandler, useReactogen } from "./useReactogen";
 import { doNothing } from "./pureUtils";
+import { useGlobalState } from "./GlobalStateProvider";
 
 const initialState: PiState = {
   mode: {
@@ -246,7 +246,7 @@ const handleAction =
       .exhaustive();
 
 export const usePiReactogen = (forceRenderError: () => void) => {
-  const config = useGlobalSelector((state) => state.app.config);
+  const { config } = useGlobalState();
 
   return useReactogen(initialState, handleAction(forceRenderError)(config));
 };

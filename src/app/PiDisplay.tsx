@@ -2,15 +2,15 @@ import { Sheet, Stack, Typography } from "@mui/joy";
 import { usePiReactogen } from "./piReducer";
 import { handleKeypress } from "./piKeypressHandler";
 import * as pi from "./piDigits";
-import { useGlobalSelector } from "./globalState";
 import { showPi, getCurrLocation, displayKeycut } from "./piUtils";
 import "./test.css";
 import { useForceRender } from "./useForceRender";
+import { useGlobalState } from "./GlobalStateProvider";
 
 export const Pi = () => {
   const [errorKey, forceRenderError] = useForceRender();
   const { state, invoke } = usePiReactogen(forceRenderError);
-  const config = useGlobalSelector((x) => x.app.config);
+  const { config } = useGlobalState();
   const shownPi = showPi(
     getCurrLocation(state),
     config.showExtraDigitsCount,
