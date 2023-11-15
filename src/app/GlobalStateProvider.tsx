@@ -1,3 +1,5 @@
+// TODO: there is an abstraction here somewhere
+
 import { Config } from "./types";
 import {
   PropsWithChildren,
