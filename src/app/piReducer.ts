@@ -21,6 +21,7 @@ import {
 } from "./piUtils";
 import { O } from "../fp-ts-exports";
 import { ActionHandler, useReactogen } from "./useReactogen";
+import { doNothing } from "./pureUtils";
 
 const initialState: PiState = {
   mode: {
@@ -207,47 +208,45 @@ const toggleShowNextDigits = (state: PiState) =>
     : state;
 
 const handleAction =
-  // (errorRef: React.RefObject<HTMLPreElement>) =>
+  (forceRenderError: () => void) =>
+  ({ allowedQuizMistakes }: Config): ActionHandler<PiState, PiAction> =>
+  (setState) =>
+  (action) =>
+  (previousState) =>
+    match(action)
+      .with({ kind: "clearKeycut" }, () => () => setState(clearKeycut))
+      .with(
+        { kind: "startKeycut" },
+        (action) => () => setState(startKeycut(action))
+      )
+      .with(
+        { kind: "setKeycutParameters" },
+        (action) => () => setState(setKeycutParameters(action))
+      )
+      .with(
+        { kind: "executeKeycut" },
+        () => () => setState((s) => executeKeycut(s))
+      )
+      .with({ kind: "toggleMode" }, () => () => setState(toggleMode))
+      .with({ kind: "restartQuiz" }, () => () => setState(restartQuiz))
+      .with(
+        { kind: "toggleShowNextDigits" },
+        () => () => setState(toggleShowNextDigits)
+      )
+      .with({ kind: "enterDigit" }, (action) => () => {
+        setState(enterDigit(allowedQuizMistakes)(action));
+        (previousState.mode.kind === "quiz" &&
+          previousState.mode.mistakesMade <= allowedQuizMistakes
+          ? forceRenderError
+          : doNothing)();
+      })
+      .with({ kind: "move" }, (action) => () => setState(move(action)))
+      .with({ kind: "goto" }, (action) => () => setState(goto(action)))
+      .with({ kind: "setMark" }, (action) => () => setState(setMark(action)))
+      .exhaustive();
 
+export const usePiReactogen = (forceRenderError: () => void) => {
+  const config = useGlobalSelector((state) => state.app.config);
 
-    ({ allowedQuizMistakes }: Config): ActionHandler<PiState, PiAction> =>
-    (setState) =>
-    (action) =>
-    (_) =>
-      match(action)
-        .with({ kind: "clearKeycut" }, () => () => setState(clearKeycut))
-        .with(
-          { kind: "startKeycut" },
-          (action) => () => setState(startKeycut(action))
-        )
-        .with(
-          { kind: "setKeycutParameters" },
-          (action) => () => setState(setKeycutParameters(action))
-        )
-        .with(
-          { kind: "executeKeycut" },
-          () => () => setState((s) => executeKeycut(s))
-        )
-        .with({ kind: "toggleMode" }, () => () => setState(toggleMode))
-        .with({ kind: "restartQuiz" }, () => () => setState(restartQuiz))
-        .with(
-          { kind: "toggleShowNextDigits" },
-          () => () => setState(toggleShowNextDigits)
-        )
-        .with({ kind: "enterDigit" }, (action) => () => {
-          setState(enterDigit(allowedQuizMistakes)(action));
-          // errorRef.current!.className = "visible";
-          // // errorRef.current!.className = "hidden";
-        })
-        .with({ kind: "move" }, (action) => () => setState(move(action)))
-        .with({ kind: "goto" }, (action) => () => setState(goto(action)))
-        .with({ kind: "setMark" }, (action) => () => setState(setMark(action)))
-        .exhaustive();
-
-export const usePiReactogen =
-  // (errorRef: React.RefObject<HTMLPreElement>)
-  () => {
-    const config = useGlobalSelector((state) => state.app.config);
-
-    return useReactogen(initialState, handleAction(config));
-  };
+  return useReactogen(initialState, handleAction(forceRenderError)(config));
+};

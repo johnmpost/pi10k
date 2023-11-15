@@ -1,8 +1,13 @@
-.error  {
-    transition: opacity 1s ease-out;
-    opacity: 1;
+.fade-out {
+  animation: fadeOut 1s;
+  opacity: 0;
 }
 
-.error.fade-out {
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
     opacity: 0;
+  }
 }

@@ -28,3 +28,5 @@ export const backspace = (str: string) =>
 
 export const toString = <T extends { toString(): string }>(value: T) =>
   value.toString();
+
+export const doNothing = () => {};
