@@ -1,13 +1,23 @@
+import { pipe } from "fp-ts/lib/function";
 import { createContextualReactogen } from "./createContextualReactogen";
-import { GlobalAction, GlobalState } from "./types";
+import { Config, GlobalAction, GlobalState } from "./types";
 import { ActionHandler } from "./useReactogen";
+import { getLocalStorage, delay } from "./pureUtils";
+import { O } from "../exports";
+
+const defaultConfig = {
+  showExtraDigitsCount: 4,
+  quizLives: 3,
+  showPreviousDigits: true,
+};
+
+const initialConfig = pipe(
+  getLocalStorage(Config)(""),
+  O.getOrElse(delay(defaultConfig))
+);
 
 const initialState: GlobalState = {
-  config: {
-    showExtraDigitsCount: 4,
-    quizLives: 3,
-    showPreviousDigits: true,
-  },
+  config: initialConfig,
 };
 
 const handleAction: ActionHandler<GlobalState, GlobalAction> =

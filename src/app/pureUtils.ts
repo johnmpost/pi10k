@@ -31,6 +31,11 @@ export const toString = <T extends { toString(): string }>(value: T) =>
 
 export const doNothing = () => {};
 
+export const delay =
+  <T>(x: T) =>
+  () =>
+    x;
+
 const localStorageSetItem = (key: string) => (value: string) =>
   localStorage.setItem(key, value);
 

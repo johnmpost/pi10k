@@ -1,4 +1,4 @@
-import { O } from "../exports";
+import { O, t } from "../exports";
 
 export type Direction = "left" | "right";
 
@@ -53,11 +53,13 @@ export type KeycutState = {
   parameters: string;
 };
 
-export type Config = {
-  showExtraDigitsCount: number;
-  quizLives: number;
-  showPreviousDigits: boolean;
-};
+export const Config = t.type({
+  showExtraDigitsCount: t.number,
+  quizLives: t.number,
+  showPreviousDigits: t.boolean,
+});
+
+export type Config = t.TypeOf<typeof Config>;
 
 export type PiState = {
   mode:
