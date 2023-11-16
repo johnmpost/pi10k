@@ -1,3 +1,5 @@
+import { Sheet } from "@mui/joy";
+
 export const Config = () => {
-  return <div>config page</div>;
+  return <Sheet sx={{ height: "100vh", padding: 1 }}>config page</Sheet>;
 };
