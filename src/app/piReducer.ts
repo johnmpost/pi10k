@@ -39,7 +39,7 @@ const clearKeycut = (state: PiState) =>
   O.isSome(state.keycut) ? { ...state, keycut: O.none } : state;
 
 const enterDigit =
-  (allowedQuizMistakes: number) =>
+  (quizLives: number) =>
   ({ digit }: EnterDigit) =>
   (state: PiState) =>
     state.mode.kind === "practice"
@@ -52,7 +52,7 @@ const enterDigit =
             },
           }
         : state
-      : quizHasFailed(state.mode.mistakesMade)(allowedQuizMistakes)
+      : quizHasFailed(state.mode.mistakesMade)(quizLives)
       ? state
       : nextDigitIsCorrect(state.mode.currLocation, digit)
       ? {
@@ -209,7 +209,7 @@ const toggleShowNextDigits = (state: PiState) =>
 
 const handleAction =
   (forceRenderError: () => void) =>
-  ({ allowedQuizMistakes }: Config): ActionHandler<PiState, PiAction> =>
+  ({ quizLives }: Config): ActionHandler<PiState, PiAction> =>
   (setState) =>
   (action) =>
   (previousState) =>
@@ -234,9 +234,9 @@ const handleAction =
         () => () => setState(toggleShowNextDigits)
       )
       .with({ kind: "enterDigit" }, (action) => () => {
-        setState(enterDigit(allowedQuizMistakes)(action));
+        setState(enterDigit(quizLives)(action));
         (previousState.mode.kind === "quiz" &&
-          previousState.mode.mistakesMade <= allowedQuizMistakes
+          previousState.mode.mistakesMade < quizLives
           ? forceRenderError
           : doNothing)();
       })

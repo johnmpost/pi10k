@@ -22,9 +22,8 @@ export const statefulKeycutToString = (keycut: StatefulKeycut) =>
     .with("setMark", () => hotkeys.startSetMarkKeycut)
     .exhaustive();
 
-export const quizHasFailed =
-  (mistakesMade: number) => (mistakesAllowed: number) =>
-    mistakesMade > mistakesAllowed;
+export const quizHasFailed = (mistakesMade: number) => (quizLives: number) =>
+  mistakesMade >= quizLives;
 
 export const nextDigitIsCorrect = (
   currLocation: number,

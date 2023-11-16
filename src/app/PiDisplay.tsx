@@ -29,7 +29,9 @@ export const Pi = () => {
         </Typography>
         <Typography level="h4" component="pre">
           {state.mode.kind === "quiz"
-            ? `Mistakes: ${state.mode.mistakesMade}`
+            ? `Lives Remaining: ${config.quizLives - state.mode.mistakesMade}/${
+                config.quizLives
+              }`
             : " "}
         </Typography>
         <Stack direction="column" alignItems="center">

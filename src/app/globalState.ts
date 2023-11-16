@@ -4,7 +4,7 @@ import { GlobalAction, GlobalState } from "./types";
 const initialState: GlobalState = {
   config: {
     showExtraDigitsCount: 4,
-    allowedQuizMistakes: 3,
+    quizLives: 3,
     showPreviousDigits: true,
   },
 };

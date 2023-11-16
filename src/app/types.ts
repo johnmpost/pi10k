@@ -55,7 +55,7 @@ export type KeycutState = {
 
 export type Config = {
   showExtraDigitsCount: number;
-  allowedQuizMistakes: number;
+  quizLives: number;
   showPreviousDigits: boolean;
 };
 
