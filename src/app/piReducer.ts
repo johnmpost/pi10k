@@ -21,7 +21,7 @@ import {
 import { O } from "../exports";
 import { ActionHandler, useReactogen } from "./useReactogen";
 import { doNothing } from "./pureUtils";
-import { useGlobalState } from "./GlobalStateProvider";
+import { useGlobalState } from "./globalState";
 
 const initialState: PiState = {
   mode: {

@@ -81,3 +81,7 @@ export type PiState = {
   };
   keycut: O.Option<KeycutState>;
 };
+
+export type GlobalState = { config: Config };
+
+export type GlobalAction = {};

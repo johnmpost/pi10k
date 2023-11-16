@@ -5,7 +5,7 @@ import * as pi from "./piDigits";
 import { showPi, getCurrLocation, displayKeycut } from "./piUtils";
 import "./fadeOut.css";
 import { useForceRender } from "./useForceRender";
-import { useGlobalState } from "./GlobalStateProvider";
+import { useGlobalState } from "./globalState";
 
 export const Pi = () => {
   const [errorKey, forceRenderError] = useForceRender();
