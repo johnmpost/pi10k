@@ -23,7 +23,7 @@ export const Pi = () => {
       onKeyDown={handleKeypress(state, invoke)}
       tabIndex={-1}
     >
-      <Sheet sx={{ height: "100%" }}>
+      <Sheet sx={{ height: "100%", padding: 1 }}>
         <Typography level="h1">
           {state.mode.kind === "practice" ? "Practice Mode" : "Quiz Mode"}
         </Typography>
