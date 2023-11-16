@@ -1,4 +1,4 @@
-import { O } from "../exports";
+import { O, t } from "../exports";
 import { flow, pipe } from "fp-ts/lib/function";
 import { Digit } from "./types";
 
@@ -30,3 +30,18 @@ export const toString = <T extends { toString(): string }>(value: T) =>
   value.toString();
 
 export const doNothing = () => {};
+
+const localStorageSetItem = (key: string) => (value: string) =>
+  localStorage.setItem(key, value);
+
+const localStorageGetItem = O.fromNullableK(localStorage.getItem);
+
+export const setLocalStorage = (key: string) =>
+  flow(JSON.stringify, localStorageSetItem(key));
+
+export const getLocalStorage = <T>(codec: t.Type<T>) =>
+  flow(
+    localStorageGetItem,
+    O.map(O.tryCatchK(JSON.parse)),
+    O.fromEitherK(codec.decode)
+  );
