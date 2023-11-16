@@ -1,4 +1,4 @@
-import { Sheet, Stack, Typography } from "@mui/joy";
+import { Link, Sheet, Stack, Typography } from "@mui/joy";
 import { usePiReactogen } from "./piReducer";
 import { handleKeypress } from "./piKeypressHandler";
 import * as pi from "./piDigits";
@@ -6,6 +6,7 @@ import { showPi, getCurrLocation, displayKeycut } from "./piUtils";
 import "./fadeOut.css";
 import { useForceRender } from "./useForceRender";
 import { useGlobalState } from "./globalState";
+import { Link as RouterLink } from "react-router-dom";
 
 export const Pi = () => {
   const [errorKey, forceRenderError] = useForceRender();
@@ -24,9 +25,22 @@ export const Pi = () => {
       tabIndex={-1}
     >
       <Sheet sx={{ height: "100%", padding: 1 }}>
-        <Typography level="h1">
-          {state.mode.kind === "practice" ? "Practice" : "Quiz"}
-        </Typography>
+        <Stack direction="row-reverse" justifyContent="space-between">
+          <Link
+            variant="plain"
+            underline="none"
+            level="title-lg"
+            component={RouterLink}
+            to="/config"
+            paddingX={2}
+            marginRight="0px"
+          >
+            Config
+          </Link>
+          <Typography level="h1">
+            {state.mode.kind === "practice" ? "Practice" : "Quiz"}
+          </Typography>
+        </Stack>
         <Typography level="h4" component="pre">
           {state.mode.kind === "quiz"
             ? `Lives Remaining: ${config.quizLives - state.mode.mistakesMade}/${
