@@ -3,7 +3,7 @@ import { usePiReactogen } from "./piReducer";
 import { handleKeypress } from "./piKeypressHandler";
 import * as pi from "./piDigits";
 import { showPi, getCurrLocation, displayKeycut } from "./piUtils";
-import "./test.css";
+import "./fadeOut.css";
 import { useForceRender } from "./useForceRender";
 import { useGlobalState } from "./GlobalStateProvider";
 
