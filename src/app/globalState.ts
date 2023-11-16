@@ -5,6 +5,7 @@ import { ActionHandler } from "./useReactogen";
 import { getLocalStorage, delay, setLocalStorage } from "./pureUtils";
 import { O } from "../exports";
 import { match } from "ts-pattern";
+import { localStorageConfigKey } from "./constants";
 
 const defaultConfig = {
   showExtraDigitsCount: 4,
@@ -13,7 +14,7 @@ const defaultConfig = {
 };
 
 const initialConfig = pipe(
-  getLocalStorage(Config)("config"),
+  getLocalStorage(Config)(localStorageConfigKey),
   O.getOrElse(delay(defaultConfig))
 );
 
@@ -26,7 +27,7 @@ const handleAction: ActionHandler<GlobalState, GlobalAction> =
     match(action)
       .with({ kind: "setConfig" }, ({ newConfig }) => () => {
         setState((_) => ({ config: newConfig }));
-        setLocalStorage("config")(newConfig);
+        setLocalStorage(localStorageConfigKey)(newConfig);
       })
       .exhaustive();
 

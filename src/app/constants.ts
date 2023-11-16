@@ -12,3 +12,5 @@ export const hotkeys = {
   moveLeftOneGroup: "D",
   moveRightOneGroup: "F",
 };
+
+export const localStorageConfigKey = "config";
