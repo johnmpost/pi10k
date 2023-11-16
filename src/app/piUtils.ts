@@ -13,7 +13,7 @@ import {
   PiState,
 } from "./types";
 import * as pi from "./piDigits";
-import { O } from "../fp-ts-exports";
+import { O } from "../exports";
 import { isPositiveInt, regexTest, toString } from "./pureUtils";
 
 export const statefulKeycutToString = (keycut: StatefulKeycut) =>

@@ -1,4 +1,4 @@
-import { O } from "../fp-ts-exports";
+import { O } from "../exports";
 import { flow, pipe } from "fp-ts/lib/function";
 import { Digit } from "./types";
 

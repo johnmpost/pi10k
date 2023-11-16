@@ -1,7 +1,7 @@
 import { P, match } from "ts-pattern";
 import { hotkeys } from "./constants";
 import { PiAction, PiState } from "./types";
-import { O } from "../fp-ts-exports";
+import { O } from "../exports";
 import { flow, pipe } from "fp-ts/lib/function";
 import {
   backspace,

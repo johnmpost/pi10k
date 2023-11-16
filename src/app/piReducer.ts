@@ -18,7 +18,7 @@ import {
   parseSetMarkParameters,
   locationInBounds,
 } from "./piUtils";
-import { O } from "../fp-ts-exports";
+import { O } from "../exports";
 import { ActionHandler, useReactogen } from "./useReactogen";
 import { doNothing } from "./pureUtils";
 import { useGlobalState } from "./GlobalStateProvider";

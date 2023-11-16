@@ -1,4 +1,4 @@
-import { O } from "../fp-ts-exports";
+import { O } from "../exports";
 
 export type Direction = "left" | "right";
 
