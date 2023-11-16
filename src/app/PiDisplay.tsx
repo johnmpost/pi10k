@@ -25,7 +25,7 @@ export const Pi = () => {
     >
       <Sheet sx={{ height: "100%", padding: 1 }}>
         <Typography level="h1">
-          {state.mode.kind === "practice" ? "Practice Mode" : "Quiz Mode"}
+          {state.mode.kind === "practice" ? "Practice" : "Quiz"}
         </Typography>
         <Typography level="h4" component="pre">
           {state.mode.kind === "quiz"
