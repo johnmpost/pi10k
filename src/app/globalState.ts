@@ -2,8 +2,9 @@ import { pipe } from "fp-ts/lib/function";
 import { createContextualReactogen } from "./createContextualReactogen";
 import { Config, GlobalAction, GlobalState } from "./types";
 import { ActionHandler } from "./useReactogen";
-import { getLocalStorage, delay } from "./pureUtils";
+import { getLocalStorage, delay, setLocalStorage } from "./pureUtils";
 import { O } from "../exports";
+import { match } from "ts-pattern";
 
 const defaultConfig = {
   showExtraDigitsCount: 4,
@@ -12,7 +13,7 @@ const defaultConfig = {
 };
 
 const initialConfig = pipe(
-  getLocalStorage(Config)(""),
+  getLocalStorage(Config)("config"),
   O.getOrElse(delay(defaultConfig))
 );
 
@@ -21,7 +22,13 @@ const initialState: GlobalState = {
 };
 
 const handleAction: ActionHandler<GlobalState, GlobalAction> =
-  (_) => (_) => (_) => () => {};
+  (setState) => (action) => (_) =>
+    match(action)
+      .with({ kind: "setConfig" }, ({ newConfig }) => () => {
+        setState((_) => ({ config: newConfig }));
+        setLocalStorage("config")(newConfig);
+      })
+      .exhaustive();
 
 export const {
   Provider: GlobalReactogenProvider,

@@ -39,7 +39,8 @@ export const delay =
 const localStorageSetItem = (key: string) => (value: string) =>
   localStorage.setItem(key, value);
 
-const localStorageGetItem = O.fromNullableK(localStorage.getItem);
+const localStorageGetItem = (key: string) =>
+  O.fromNullable(localStorage.getItem(key));
 
 export const setLocalStorage = (key: string) =>
   flow(JSON.stringify, localStorageSetItem(key));

@@ -80,4 +80,4 @@ export type PiState = {
 
 export type GlobalState = { config: Config };
 
-export type GlobalAction = {};
+export type GlobalAction = { kind: "setConfig"; newConfig: Config };
