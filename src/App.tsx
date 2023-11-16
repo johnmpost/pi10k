@@ -1,6 +1,6 @@
 import { CssBaseline, CssVarsProvider } from "@mui/joy";
 import { Pi } from "./app/PiDisplay";
-import { GlobalStateProvider } from "./app/globalState";
+import { GlobalReactogenProvider } from "./app/globalState";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { ErrorPage } from "./app/ErrorPage";
 import { Config } from "./app/Config";
@@ -12,11 +12,11 @@ const router = createBrowserRouter([
 
 export const App = () => {
   return (
-    <GlobalStateProvider>
+    <GlobalReactogenProvider>
       <CssVarsProvider defaultMode="dark">
         <CssBaseline />
         <RouterProvider router={router} />
       </CssVarsProvider>
-    </GlobalStateProvider>
+    </GlobalReactogenProvider>
   );
 };

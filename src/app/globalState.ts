@@ -1,5 +1,6 @@
-import { createContextualReducer } from "./createContextualReducer";
+import { createContextualReactogen } from "./createContextualReactogen";
 import { GlobalAction, GlobalState } from "./types";
+import { ActionHandler } from "./useReactogen";
 
 const initialState: GlobalState = {
   config: {
@@ -9,10 +10,11 @@ const initialState: GlobalState = {
   },
 };
 
-const reduce = (state: GlobalState, _: GlobalAction) => state;
+const handleAction: ActionHandler<GlobalState, GlobalAction> =
+  (_) => (_) => (_) => () => {};
 
 export const {
-  Provider: GlobalStateProvider,
+  Provider: GlobalReactogenProvider,
   useState: useGlobalState,
-  useDispatch: useGlobalDispatch,
-} = createContextualReducer(initialState, reduce);
+  useInvoke: useGlobalInvoke,
+} = createContextualReactogen(initialState, handleAction);
