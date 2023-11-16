@@ -5,7 +5,6 @@ const initialState: GlobalState = {
   config: {
     showExtraDigitsCount: 4,
     allowedQuizMistakes: 3,
-    groupings: [],
     showPreviousDigits: true,
   },
 };

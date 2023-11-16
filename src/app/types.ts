@@ -53,15 +53,9 @@ export type KeycutState = {
   parameters: string;
 };
 
-export type Grouping = {
-  startLocation: number;
-  groupSize: number;
-};
-
 export type Config = {
   showExtraDigitsCount: number;
   allowedQuizMistakes: number;
-  groupings: Grouping[];
   showPreviousDigits: boolean;
 };
 
