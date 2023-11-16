@@ -52,7 +52,9 @@ export const Pi = () => {
           <Typography component="pre">{displayKeycut(state.keycut)}</Typography>
           <Stack direction="row" alignItems="center" justifyContent="center">
             <Typography component="pre" fontFamily="monospace" fontSize={64}>
-              {shownPi.left}
+              {config.showPreviousDigits
+                ? shownPi.left
+                : " ".repeat(config.showExtraDigitsCount)}
             </Typography>
             <Typography component="pre" fontFamily="monospace" fontSize={64}>
               {shownPi.center}
