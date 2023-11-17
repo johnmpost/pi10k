@@ -75,7 +75,7 @@ export const ConfigPage = () => {
   );
 
   return (
-    <Sheet sx={{ height: "100vh", padding: 1 }}>
+    <Sheet sx={{ height: "100vh", padding: 2 }}>
       <Stack
         paddingBottom={2}
         direction="row-reverse"

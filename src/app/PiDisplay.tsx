@@ -25,7 +25,7 @@ export const Pi = () => {
       onKeyDown={handleKeypress(state, invoke)}
       tabIndex={-1}
     >
-      <Sheet sx={{ height: "100%", padding: 1 }}>
+      <Sheet sx={{ height: "100%", padding: 2 }}>
         <Stack
           direction="row-reverse"
           alignItems="center"
