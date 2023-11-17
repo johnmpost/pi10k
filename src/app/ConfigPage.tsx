@@ -12,21 +12,19 @@ import { Link as RouterLink } from "react-router-dom";
 import { useGlobalInvoke, useGlobalState } from "./globalState";
 import { flow } from "fp-ts/lib/function";
 import { getTargetChecked } from "./pureUtils";
-import { Config, GlobalAction } from "./types";
+import { Config } from "./types";
 
 export const ConfigPage = () => {
   const { config } = useGlobalState();
   const invoke = useGlobalInvoke();
 
   const updateProperty =
-    (invoke: (action: GlobalAction) => void) =>
     <K extends keyof Config>(key: K) =>
     (newValue: Config[K]) =>
       invoke({
         kind: "setConfig",
         newConfig: { ...config, [key]: newValue },
       });
-  const test = updateProperty(invoke);
 
   return (
     <Sheet sx={{ height: "100vh", padding: 1 }}>
@@ -70,7 +68,10 @@ export const ConfigPage = () => {
               <Switch
                 size="lg"
                 checked={config.showPreviousDigits}
-                onChange={flow(getTargetChecked, test("showPreviousDigits"))}
+                onChange={flow(
+                  getTargetChecked,
+                  updateProperty("showPreviousDigits")
+                )}
               />
             </Stack>
           </Grid>
