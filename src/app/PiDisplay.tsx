@@ -1,4 +1,4 @@
-import { Link, Sheet, Stack, Typography } from "@mui/joy";
+import { IconButton, Sheet, Stack, Typography } from "@mui/joy";
 import { usePiReactogen } from "./piReactogen";
 import { handleKeypress } from "./piKeypressHandler";
 import * as pi from "./piDigits";
@@ -7,6 +7,7 @@ import "./fadeOut.css";
 import { useForceRender } from "./useForceRender";
 import { useGlobalState } from "./globalState";
 import { Link as RouterLink } from "react-router-dom";
+import { Settings } from "@mui/icons-material";
 
 export const Pi = () => {
   const [errorKey, forceRenderError] = useForceRender();
@@ -25,18 +26,14 @@ export const Pi = () => {
       tabIndex={-1}
     >
       <Sheet sx={{ height: "100%", padding: 1 }}>
-        <Stack direction="row-reverse" justifyContent="space-between">
-          <Link
-            variant="plain"
-            underline="none"
-            level="title-lg"
-            component={RouterLink}
-            to="/config"
-            paddingX={2}
-            marginRight="0px"
-          >
-            Config
-          </Link>
+        <Stack
+          direction="row-reverse"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <IconButton size="lg" component={RouterLink} to="/config">
+            <Settings />
+          </IconButton>
           <Typography level="h1">
             {state.mode.kind === "practice" ? "Practice" : "Quiz"}
           </Typography>

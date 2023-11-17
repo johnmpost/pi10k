@@ -2,8 +2,8 @@ import {
   Box,
   Button,
   Grid,
+  IconButton,
   Input,
-  Link,
   Sheet,
   Stack,
   Switch,
@@ -29,6 +29,7 @@ import { O } from "../exports";
 import { sequenceS } from "fp-ts/lib/Apply";
 import { not } from "fp-ts/lib/Predicate";
 import { eqConfig } from "./typeUtils";
+import { Home } from "@mui/icons-material";
 
 type Form = {
   showExtraDigitsCount: string;
@@ -78,19 +79,12 @@ export const ConfigPage = () => {
       <Stack
         paddingBottom={2}
         direction="row-reverse"
+        alignItems="center"
         justifyContent="space-between"
       >
-        <Link
-          variant="plain"
-          underline="none"
-          level="title-lg"
-          component={RouterLink}
-          to="/"
-          paddingX={2}
-          marginRight="0px"
-        >
-          Home
-        </Link>
+        <IconButton size="lg" component={RouterLink} to="/">
+          <Home />
+        </IconButton>
         <Typography level="h1">Config</Typography>
       </Stack>
       <Box maxWidth={500} mx="auto">
