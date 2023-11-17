@@ -16,6 +16,7 @@ import {
   NonNegativeInt,
   PositiveInt,
   curry2,
+  doNothing,
   getTargetChecked,
   getTargetValue,
   isNonNegativeInt,
@@ -52,14 +53,16 @@ const formToConfig = (form: Form): O.Option<Config> =>
     showPreviousDigits: O.some(form.showPreviousDigits),
   });
 
+const configToForm = (config: Config) => ({
+  showExtraDigitsCount: config.showExtraDigitsCount.toString(),
+  quizLives: config.quizLives.toString(),
+  showPreviousDigits: config.showPreviousDigits,
+});
+
 export const ConfigPage = () => {
   const { config } = useGlobalState();
   const invoke = useGlobalInvoke();
-  const [form, setForm] = useState<Form>({
-    showExtraDigitsCount: config.showExtraDigitsCount.toString(),
-    quizLives: config.quizLives.toString(),
-    showPreviousDigits: config.showPreviousDigits,
-  });
+  const [form, setForm] = useState<Form>(configToForm(config));
 
   const updateField = updateProperty(setForm);
 
@@ -133,12 +136,28 @@ export const ConfigPage = () => {
             </Stack>
           </Grid>
           <Grid xs={6} mt={2}>
-            <Button fullWidth variant="outlined">
+            <Button
+              fullWidth
+              variant="outlined"
+              onClick={() => setForm(configToForm(config))}
+            >
               Reset
             </Button>
           </Grid>
           <Grid xs={6} mt={2}>
-            <Button fullWidth disabled={!formIsChangedAndValid}>
+            <Button
+              fullWidth
+              disabled={!formIsChangedAndValid}
+              onClick={() =>
+                pipe(
+                  form,
+                  formToConfig,
+                  O.fold(doNothing, (newConfig) =>
+                    invoke({ kind: "setConfig", newConfig })
+                  )
+                )
+              }
+            >
               Save
             </Button>
           </Grid>
