@@ -11,20 +11,19 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 import { useGlobalInvoke, useGlobalState } from "./globalState";
 import { flow } from "fp-ts/lib/function";
-import { getTargetChecked } from "./pureUtils";
-import { Config } from "./types";
+import { getTargetChecked, getTargetValue, updateProperty } from "./pureUtils";
+import { useState } from "react";
 
 export const ConfigPage = () => {
   const { config } = useGlobalState();
   const invoke = useGlobalInvoke();
+  const [form, setForm] = useState({
+    showExtraDigitsCount: config.showExtraDigitsCount.toString(),
+    quizLives: config.quizLives.toString(),
+    showPreviousDigits: config.showPreviousDigits,
+  });
 
-  const updateProperty =
-    <K extends keyof Config>(key: K) =>
-    (newValue: Config[K]) =>
-      invoke({
-        kind: "setConfig",
-        newConfig: { ...config, [key]: newValue },
-      });
+  const updateField = updateProperty(setForm);
 
   return (
     <Sheet sx={{ height: "100vh", padding: 1 }}>
@@ -52,13 +51,24 @@ export const ConfigPage = () => {
             <Typography level="h4">Number of Extra Digits to Show</Typography>
           </Grid>
           <Grid xs={4}>
-            <Input type="number" />
+            <Input
+              type="number"
+              value={form.showExtraDigitsCount}
+              onChange={flow(
+                getTargetValue,
+                updateField("showExtraDigitsCount")
+              )}
+            />
           </Grid>
           <Grid xs={8}>
             <Typography level="h4">Quiz Lives</Typography>
           </Grid>
           <Grid xs={4}>
-            <Input type="number" />
+            <Input
+              type="number"
+              value={form.quizLives}
+              onChange={flow(getTargetValue, updateField("quizLives"))}
+            />
           </Grid>
           <Grid xs={8}>
             <Typography level="h4">Show Previous Digits</Typography>
@@ -67,10 +77,10 @@ export const ConfigPage = () => {
             <Stack height="100%" direction="row" alignItems="center">
               <Switch
                 size="lg"
-                checked={config.showPreviousDigits}
+                checked={form.showPreviousDigits}
                 onChange={flow(
                   getTargetChecked,
-                  updateProperty("showPreviousDigits")
+                  updateField("showPreviousDigits")
                 )}
               />
             </Stack>
