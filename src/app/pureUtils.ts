@@ -46,10 +46,10 @@ const localStorageGetItem = (key: string) =>
 export const setLocalStorage = (key: string) =>
   flow(JSON.stringify, localStorageSetItem(key));
 
-export const getLocalStorage = <T>(codec: t.Type<T>) =>
+export const getLocalStorage = <T>(codec: t.Type<T, any>) =>
   flow(
     localStorageGetItem,
-    O.map(O.tryCatchK(JSON.parse)),
+    O.flatMap(O.tryCatchK(JSON.parse)),
     O.fromEitherK(codec.decode)
   );
 

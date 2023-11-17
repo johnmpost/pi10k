@@ -24,10 +24,7 @@ export const ConfigPage = () => {
     (newValue: Config[K]) =>
       invoke({
         kind: "setConfig",
-        setState: (s) => ({
-          ...s,
-          [key]: newValue,
-        }),
+        newConfig: { ...config, [key]: newValue },
       });
   const test = updateProperty(invoke);
 

@@ -83,5 +83,5 @@ export type GlobalState = { config: Config };
 
 export type GlobalAction = {
   kind: "setConfig";
-  setState: (s: Config) => Config;
+  newConfig: Config;
 };

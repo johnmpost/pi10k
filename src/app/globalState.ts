@@ -2,14 +2,20 @@ import { pipe } from "fp-ts/lib/function";
 import { createContextualReactogen } from "./createContextualReactogen";
 import { Config, GlobalAction, GlobalState } from "./types";
 import { ActionHandler } from "./useReactogen";
-import { getLocalStorage, delay, setLocalStorage } from "./pureUtils";
+import {
+  getLocalStorage,
+  delay,
+  setLocalStorage,
+  PositiveInt,
+  NonNegativeInt,
+} from "./pureUtils";
 import { O } from "../exports";
 import { match } from "ts-pattern";
 import { localStorageConfigKey } from "./constants";
 
-const defaultConfig = {
-  showExtraDigitsCount: 4,
-  quizLives: 3,
+const defaultConfig: Config = {
+  showExtraDigitsCount: 4 as NonNegativeInt,
+  quizLives: 3 as PositiveInt,
   showPreviousDigits: true,
 };
 
@@ -23,11 +29,10 @@ const initialState: GlobalState = {
 };
 
 const handleAction: ActionHandler<GlobalState, GlobalAction> =
-  (setState) => (action) => (previousState) =>
+  (setState) => (action) => (_) =>
     match(action)
-      .with({ kind: "setConfig" }, ({ setState: setState2 }) => () => {
-        const newConfig = setState2(previousState.config);
-        setState(() => ({ config: newConfig }));
+      .with({ kind: "setConfig" }, ({ newConfig }) => () => {
+        setState((s) => ({ ...s, config: newConfig }));
         setLocalStorage(localStorageConfigKey)(newConfig);
       })
       .exhaustive();
