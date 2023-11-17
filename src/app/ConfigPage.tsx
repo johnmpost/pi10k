@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Grid,
   Input,
   Link,
@@ -10,20 +11,64 @@ import {
 } from "@mui/joy";
 import { Link as RouterLink } from "react-router-dom";
 import { useGlobalInvoke, useGlobalState } from "./globalState";
-import { flow } from "fp-ts/lib/function";
-import { getTargetChecked, getTargetValue, updateProperty } from "./pureUtils";
+import { flow, pipe } from "fp-ts/lib/function";
+import {
+  NonNegativeInt,
+  PositiveInt,
+  curry2,
+  getTargetChecked,
+  getTargetValue,
+  isNonNegativeInt,
+  isPositiveInt,
+  updateProperty,
+} from "./pureUtils";
 import { useState } from "react";
+import { Config } from "./types";
+import { O } from "../exports";
+import { sequenceS } from "fp-ts/lib/Apply";
+import { not } from "fp-ts/lib/Predicate";
+import { eqConfig } from "./typeUtils";
+
+type Form = {
+  showExtraDigitsCount: string;
+  quizLives: string;
+  showPreviousDigits: boolean;
+};
+
+const formToConfig = (form: Form): O.Option<Config> =>
+  sequenceS(O.Applicative)({
+    showExtraDigitsCount: pipe(
+      form.showExtraDigitsCount,
+      parseFloat,
+      NonNegativeInt.decode,
+      O.fromEither
+    ),
+    quizLives: pipe(
+      form.quizLives,
+      parseFloat,
+      PositiveInt.decode,
+      O.fromEither
+    ),
+    showPreviousDigits: O.some(form.showPreviousDigits),
+  });
 
 export const ConfigPage = () => {
   const { config } = useGlobalState();
   const invoke = useGlobalInvoke();
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<Form>({
     showExtraDigitsCount: config.showExtraDigitsCount.toString(),
     quizLives: config.quizLives.toString(),
     showPreviousDigits: config.showPreviousDigits,
   });
 
   const updateField = updateProperty(setForm);
+
+  const formIsChangedAndValid = pipe(
+    form,
+    formToConfig,
+    O.map(not(curry2(eqConfig.equals)(config))),
+    O.getOrElse(() => false)
+  );
 
   return (
     <Sheet sx={{ height: "100vh", padding: 1 }}>
@@ -58,6 +103,7 @@ export const ConfigPage = () => {
                 getTargetValue,
                 updateField("showExtraDigitsCount")
               )}
+              error={!isNonNegativeInt(form.showExtraDigitsCount)}
             />
           </Grid>
           <Grid xs={8}>
@@ -68,6 +114,7 @@ export const ConfigPage = () => {
               type="number"
               value={form.quizLives}
               onChange={flow(getTargetValue, updateField("quizLives"))}
+              error={!isPositiveInt(form.quizLives)}
             />
           </Grid>
           <Grid xs={8}>
@@ -84,6 +131,16 @@ export const ConfigPage = () => {
                 )}
               />
             </Stack>
+          </Grid>
+          <Grid xs={6} mt={2}>
+            <Button fullWidth variant="outlined">
+              Reset
+            </Button>
+          </Grid>
+          <Grid xs={6} mt={2}>
+            <Button fullWidth disabled={!formIsChangedAndValid}>
+              Save
+            </Button>
           </Grid>
         </Grid>
       </Box>

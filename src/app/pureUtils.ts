@@ -16,7 +16,8 @@ export const unsafeUnwrap = <T>(opt: O.Option<T>) =>
 export const regexTest = (regex: RegExp) => (str: string) => regex.test(str);
 export const isDigit = regexTest(/^[0-9]$/);
 export const isOneCharacter = regexTest(/^.$/);
-export const isPositiveInt = regexTest(/^[0-9]*$/);
+export const isPositiveInt = regexTest(/^[1-9][0-9]*$/);
+export const isNonNegativeInt = regexTest(/^[0-9]*$/);
 
 export const stringToDigit = flow(
   O.fromPredicate(isDigit),
@@ -93,3 +94,9 @@ const NonNegative = t.brand(
 type NonNegative = t.TypeOf<typeof NonNegative>;
 export const NonNegativeInt = t.intersection([t.Int, NonNegative]);
 export type NonNegativeInt = t.TypeOf<typeof NonNegativeInt>;
+
+export const curry2 =
+  <A, B, R>(fn: (a: A, b: B) => R) =>
+  (a: A) =>
+  (b: B) =>
+    fn(a, b);
