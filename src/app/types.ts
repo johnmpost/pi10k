@@ -53,6 +53,7 @@ export type KeycutState = {
   parameters: string;
 };
 
+// TODO ensure positive int
 export const Config = t.type({
   showExtraDigitsCount: t.number,
   quizLives: t.number,
@@ -80,4 +81,7 @@ export type PiState = {
 
 export type GlobalState = { config: Config };
 
-export type GlobalAction = { kind: "setConfig"; newConfig: Config };
+export type GlobalAction = {
+  kind: "setConfig";
+  setState: (s: Config) => Config;
+};

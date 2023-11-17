@@ -1,6 +1,7 @@
 import { O, t } from "../exports";
 import { flow, pipe } from "fp-ts/lib/function";
 import { Digit } from "./types";
+import React from "react";
 
 export const unsafeUnwrap = <T>(opt: O.Option<T>) =>
   pipe(
@@ -51,3 +52,20 @@ export const getLocalStorage = <T>(codec: t.Type<T>) =>
     O.map(O.tryCatchK(JSON.parse)),
     O.fromEitherK(codec.decode)
   );
+
+export const setProperty =
+  <T>(obj: T) =>
+  <K extends keyof T>(property: K) =>
+  (newValue: T[K]) => ({ ...obj, [property]: newValue });
+
+export const updateProperty =
+  <T>(setState: (fn: (x: T) => T) => void) =>
+  <K extends keyof T>(field: K) =>
+  (newValue: T[K]) =>
+    setState((x) => setProperty(x)(field)(newValue));
+
+export const getTargetChecked = (e: React.ChangeEvent<HTMLInputElement>) =>
+  e.target.checked;
+
+export const getTargetValue = (e: React.ChangeEvent<HTMLInputElement>) =>
+  e.target.value;

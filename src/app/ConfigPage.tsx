@@ -1,16 +1,36 @@
 import {
   Box,
-  Checkbox,
   Grid,
   Input,
   Link,
   Sheet,
   Stack,
+  Switch,
   Typography,
 } from "@mui/joy";
 import { Link as RouterLink } from "react-router-dom";
+import { useGlobalInvoke, useGlobalState } from "./globalState";
+import { flow } from "fp-ts/lib/function";
+import { getTargetChecked } from "./pureUtils";
+import { Config, GlobalAction } from "./types";
 
-export const Config = () => {
+export const ConfigPage = () => {
+  const { config } = useGlobalState();
+  const invoke = useGlobalInvoke();
+
+  const updateProperty =
+    (invoke: (action: GlobalAction) => void) =>
+    <K extends keyof Config>(key: K) =>
+    (newValue: Config[K]) =>
+      invoke({
+        kind: "setConfig",
+        setState: (s) => ({
+          ...s,
+          [key]: newValue,
+        }),
+      });
+  const test = updateProperty(invoke);
+
   return (
     <Sheet sx={{ height: "100vh", padding: 1 }}>
       <Stack
@@ -50,7 +70,11 @@ export const Config = () => {
           </Grid>
           <Grid xs={4}>
             <Stack height="100%" direction="row" alignItems="center">
-              <Checkbox size="lg" />
+              <Switch
+                size="lg"
+                checked={config.showPreviousDigits}
+                onChange={flow(getTargetChecked, test("showPreviousDigits"))}
+              />
             </Stack>
           </Grid>
         </Grid>

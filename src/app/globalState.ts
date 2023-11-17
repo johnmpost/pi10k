@@ -23,10 +23,11 @@ const initialState: GlobalState = {
 };
 
 const handleAction: ActionHandler<GlobalState, GlobalAction> =
-  (setState) => (action) => (_) =>
+  (setState) => (action) => (previousState) =>
     match(action)
-      .with({ kind: "setConfig" }, ({ newConfig }) => () => {
-        setState((_) => ({ config: newConfig }));
+      .with({ kind: "setConfig" }, ({ setState: setState2 }) => () => {
+        const newConfig = setState2(previousState.config);
+        setState(() => ({ config: newConfig }));
         setLocalStorage(localStorageConfigKey)(newConfig);
       })
       .exhaustive();
