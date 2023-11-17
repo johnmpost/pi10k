@@ -51,7 +51,7 @@ export const getLocalStorage = <T>(codec: t.Type<T, any>) =>
   flow(
     localStorageGetItem,
     O.flatMap(O.tryCatchK(JSON.parse)),
-    O.fromEitherK(codec.decode)
+    O.flatMap(O.fromEitherK(codec.decode))
   );
 
 export const setProperty =
