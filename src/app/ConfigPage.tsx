@@ -85,7 +85,7 @@ export const ConfigPage = () => {
         <IconButton size="lg" component={RouterLink} to="/">
           <Home />
         </IconButton>
-        <Typography level="h1">Config</Typography>
+        <Typography level="h1">Settings</Typography>
       </Stack>
       <Box maxWidth={500} mx="auto">
         <Grid container spacing={1}>
