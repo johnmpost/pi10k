@@ -14,7 +14,7 @@ import {
 } from "./types";
 import * as pi from "./piDigits";
 import { O } from "../exports";
-import { isPositiveInt, regexTest, toString } from "./pureUtils";
+import { isNonNegativeInt, regexTest, toString } from "./pureUtils";
 
 export const statefulKeycutToString = (keycut: StatefulKeycut) =>
   match(keycut)
@@ -40,7 +40,7 @@ export const locationInBounds = (location: number) =>
 
 const isMark = regexTest(gotoMarkParam);
 const isLocation = (str: string) =>
-  isPositiveInt(str) && locationInBounds(parseInt(str));
+  isNonNegativeInt(str) && locationInBounds(parseInt(str));
 
 export const parseGotoParameters = ({
   parameters,

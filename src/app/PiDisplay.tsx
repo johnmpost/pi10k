@@ -1,5 +1,5 @@
 import { Link, Sheet, Stack, Typography } from "@mui/joy";
-import { usePiReactogen } from "./piReducer";
+import { usePiReactogen } from "./piReactogen";
 import { handleKeypress } from "./piKeypressHandler";
 import * as pi from "./piDigits";
 import { showPi, getCurrLocation, displayKeycut } from "./piUtils";
