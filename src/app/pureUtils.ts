@@ -69,3 +69,27 @@ export const getTargetChecked = (e: React.ChangeEvent<HTMLInputElement>) =>
 
 export const getTargetValue = (e: React.ChangeEvent<HTMLInputElement>) =>
   e.target.value;
+
+interface PositiveBrand {
+  readonly Positive: unique symbol;
+}
+const Positive = t.brand(
+  t.number,
+  (n): n is t.Branded<number, PositiveBrand> => 0 < n,
+  "Positive"
+);
+type Positive = t.TypeOf<typeof Positive>;
+export const PositiveInt = t.intersection([t.Int, Positive]);
+export type PositiveInt = t.TypeOf<typeof PositiveInt>;
+
+interface NonNegativeBrand {
+  readonly NonNegative: unique symbol;
+}
+const NonNegative = t.brand(
+  t.number,
+  (n): n is t.Branded<number, NonNegativeBrand> => 0 <= n,
+  "NonNegative"
+);
+type NonNegative = t.TypeOf<typeof NonNegative>;
+export const NonNegativeInt = t.intersection([t.Int, NonNegative]);
+export type NonNegativeInt = t.TypeOf<typeof NonNegativeInt>;

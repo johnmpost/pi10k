@@ -1,4 +1,5 @@
 import { O, t } from "../exports";
+import { NonNegativeInt, PositiveInt } from "./pureUtils";
 
 export type Direction = "left" | "right";
 
@@ -53,10 +54,9 @@ export type KeycutState = {
   parameters: string;
 };
 
-// TODO ensure positive int
 export const Config = t.type({
-  showExtraDigitsCount: t.number,
-  quizLives: t.number,
+  showExtraDigitsCount: NonNegativeInt,
+  quizLives: PositiveInt,
   showPreviousDigits: t.boolean,
 });
 
