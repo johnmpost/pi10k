@@ -30,6 +30,7 @@ import { sequenceS } from "fp-ts/lib/Apply";
 import { not } from "fp-ts/lib/Predicate";
 import { eqConfig } from "./typeUtils";
 import { Home } from "@mui/icons-material";
+import { ModeToggle } from "./ModeToggle";
 
 type Form = {
   showExtraDigitsCount: string;
@@ -82,9 +83,12 @@ export const ConfigPage = () => {
         alignItems="center"
         justifyContent="space-between"
       >
-        <IconButton size="lg" component={RouterLink} to="/">
-          <Home />
-        </IconButton>
+        <Stack alignItems="center" direction="row" spacing={1}>
+          <ModeToggle />
+          <IconButton size="lg" component={RouterLink} to="/">
+            <Home />
+          </IconButton>
+        </Stack>
         <Typography level="h1">Settings</Typography>
       </Stack>
       <Box maxWidth={500} mx="auto">

@@ -8,6 +8,7 @@ import { useForceRender } from "./useForceRender";
 import { useGlobalState } from "./globalState";
 import { Link as RouterLink } from "react-router-dom";
 import { Settings } from "@mui/icons-material";
+import { ModeToggle } from "./ModeToggle";
 
 export const Pi = () => {
   const [errorKey, forceRenderError] = useForceRender();
@@ -27,16 +28,19 @@ export const Pi = () => {
     >
       <Sheet sx={{ height: "100%", padding: 2 }}>
         <Stack
-          direction="row-reverse"
+          direction="row"
           alignItems="center"
           justifyContent="space-between"
         >
-          <IconButton size="lg" component={RouterLink} to="/config">
-            <Settings />
-          </IconButton>
           <Typography level="h1">
             {state.mode.kind === "practice" ? "Practice" : "Quiz"}
           </Typography>
+          <Stack alignItems="center" direction="row" spacing={1}>
+            <ModeToggle />
+            <IconButton size="lg" component={RouterLink} to="/config">
+              <Settings />
+            </IconButton>
+          </Stack>
         </Stack>
         <Typography level="h4" component="pre">
           {state.mode.kind === "quiz"
