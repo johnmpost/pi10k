@@ -29,7 +29,7 @@ import { O } from "../exports";
 import { sequenceS } from "fp-ts/lib/Apply";
 import { not } from "fp-ts/lib/Predicate";
 import { eqConfig } from "./typeUtils";
-import { Home } from "@mui/icons-material";
+import { HelpOutline, Home } from "@mui/icons-material";
 import { ModeToggle } from "./ModeToggle";
 
 type Form = {
@@ -84,6 +84,13 @@ export const ConfigPage = () => {
         justifyContent="space-between"
       >
         <Stack alignItems="center" direction="row" spacing={1}>
+          <IconButton
+            size="lg"
+            component="a"
+            href="https://github.com/johnmpost/pi10k/blob/main/user-guide.md"
+          >
+            <HelpOutline />
+          </IconButton>
           <ModeToggle />
           <IconButton size="lg" component={RouterLink} to="/">
             <Home />

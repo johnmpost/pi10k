@@ -7,7 +7,7 @@ import "./fadeOut.css";
 import { useForceRender } from "./useForceRender";
 import { useGlobalState } from "./globalState";
 import { Link as RouterLink } from "react-router-dom";
-import { Settings } from "@mui/icons-material";
+import { HelpOutline, Settings } from "@mui/icons-material";
 import { ModeToggle } from "./ModeToggle";
 import { useState } from "react";
 
@@ -40,6 +40,13 @@ export const Pi = () => {
             {state.mode.kind === "practice" ? "Practice" : "Quiz"}
           </Typography>
           <Stack alignItems="center" direction="row" spacing={1}>
+            <IconButton
+              size="lg"
+              component="a"
+              href="https://github.com/johnmpost/pi10k/blob/main/user-guide.md"
+            >
+              <HelpOutline />
+            </IconButton>
             <ModeToggle />
             <IconButton size="lg" component={RouterLink} to="/config">
               <Settings />
