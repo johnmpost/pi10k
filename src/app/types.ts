@@ -3,7 +3,7 @@ import { NonNegativeInt, PositiveInt } from "./pureUtils";
 
 export type Direction = "left" | "right";
 
-export type Unit = "digits" | "groups";
+export type Unit = "digits";
 
 export type Digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 

@@ -9,8 +9,6 @@ export const hotkeys = {
   startSetMarkKeycut: "s",
   moveLeftOneDigit: "d",
   moveRightOneDigit: "f",
-  moveLeftOneGroup: "D",
-  moveRightOneGroup: "F",
 };
 
 export const localStorageConfigKey = "config";

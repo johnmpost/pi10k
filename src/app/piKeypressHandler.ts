@@ -51,22 +51,6 @@ export const handleKeypress =
               })
             )
             .with(
-              hotkeys.moveLeftOneGroup,
-              createInvoke({
-                kind: "move",
-                direction: "left",
-                units: "groups",
-              })
-            )
-            .with(
-              hotkeys.moveRightOneGroup,
-              createInvoke({
-                kind: "move",
-                direction: "right",
-                units: "groups",
-              })
-            )
-            .with(
               P.when(isDigit),
               (digitStr) => () =>
                 invoke({

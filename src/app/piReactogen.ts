@@ -116,10 +116,6 @@ const move = (parameters: Move) => (state: PiState) =>
             },
           };
         })
-        .with("groups", () => {
-          console.warn("moving by groups not yet implemented");
-          return state;
-        })
         .exhaustive()
     )
     .with({ kind: "quiz" }, () => state)
