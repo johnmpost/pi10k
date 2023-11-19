@@ -1,5 +1,5 @@
 import { CssBaseline, CssVarsProvider } from "@mui/joy";
-import { Pi } from "./app/PiDisplay";
+import { Pi } from "./app/Pi";
 import { GlobalReactogenProvider } from "./app/globalState";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { ErrorPage } from "./app/ErrorPage";
