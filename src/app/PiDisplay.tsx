@@ -9,18 +9,25 @@ import { useGlobalState } from "./globalState";
 import { Link as RouterLink } from "react-router-dom";
 import { HelpOutline, Settings } from "@mui/icons-material";
 import { ModeToggle } from "./ModeToggle";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const Pi = () => {
   const [errorKey, forceRenderError] = useForceRender();
   const { state, invoke } = usePiReactogen(forceRenderError);
   const { config } = useGlobalState();
   const [focused, setFocused] = useState(false);
+  const mainDivRef = useRef<HTMLDivElement>(null);
   const shownPi = showPi(
     getCurrLocation(state),
     config.showExtraDigitsCount,
     pi.digits
   );
+
+  useEffect(() => {
+    if (mainDivRef.current) {
+      mainDivRef.current.focus();
+    }
+  }, []);
 
   return (
     <div
@@ -29,6 +36,7 @@ export const Pi = () => {
       tabIndex={-1}
       onFocus={() => setFocused(true)}
       onBlur={() => setFocused(false)}
+      ref={mainDivRef}
     >
       <Sheet sx={{ height: "100%", padding: 2 }}>
         <Stack
