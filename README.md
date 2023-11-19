@@ -2,4 +2,4 @@
 
 pi10k is an app to help you memorize pi.
 
-Full readme coming soon.
+More readme coming soon, including an explanation of the cool stuff in the source code.
