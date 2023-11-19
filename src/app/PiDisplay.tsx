@@ -9,11 +9,13 @@ import { useGlobalState } from "./globalState";
 import { Link as RouterLink } from "react-router-dom";
 import { Settings } from "@mui/icons-material";
 import { ModeToggle } from "./ModeToggle";
+import { useState } from "react";
 
 export const Pi = () => {
   const [errorKey, forceRenderError] = useForceRender();
   const { state, invoke } = usePiReactogen(forceRenderError);
   const { config } = useGlobalState();
+  const [focused, setFocused] = useState(false);
   const shownPi = showPi(
     getCurrLocation(state),
     config.showExtraDigitsCount,
@@ -25,6 +27,8 @@ export const Pi = () => {
       style={{ height: "100vh" }}
       onKeyDown={handleKeypress(state, invoke)}
       tabIndex={-1}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
     >
       <Sheet sx={{ height: "100%", padding: 2 }}>
         <Stack
@@ -82,6 +86,9 @@ export const Pi = () => {
             )}
           </Stack>
           <Typography fontSize={24}>{getCurrLocation(state)}</Typography>
+          <Typography fontSize={18} pt={4}>
+            {focused ? "" : "Click to focus"}
+          </Typography>
         </Stack>
       </Sheet>
     </div>
