@@ -10,6 +10,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { HelpOutline, Settings } from "@mui/icons-material";
 import { ModeToggle } from "./ModeToggle";
 import { useEffect, useRef, useState } from "react";
+import { userGuideUrl } from "./constants";
 
 export const Pi = () => {
   const [errorKey, forceRenderError] = useForceRender();
@@ -48,11 +49,7 @@ export const Pi = () => {
             {state.mode.kind === "practice" ? "Practice" : "Quiz"}
           </Typography>
           <Stack alignItems="center" direction="row" spacing={1}>
-            <IconButton
-              size="lg"
-              component="a"
-              href="https://github.com/johnmpost/pi10k/blob/main/user-guide.md"
-            >
+            <IconButton size="lg" component="a" href={userGuideUrl}>
               <HelpOutline />
             </IconButton>
             <ModeToggle />

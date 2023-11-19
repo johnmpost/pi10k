@@ -31,6 +31,7 @@ import { not } from "fp-ts/lib/Predicate";
 import { eqConfig } from "./typeUtils";
 import { HelpOutline, Home } from "@mui/icons-material";
 import { ModeToggle } from "./ModeToggle";
+import { userGuideUrl } from "./constants";
 
 type Form = {
   showExtraDigitsCount: string;
@@ -84,11 +85,7 @@ export const ConfigPage = () => {
         justifyContent="space-between"
       >
         <Stack alignItems="center" direction="row" spacing={1}>
-          <IconButton
-            size="lg"
-            component="a"
-            href="https://github.com/johnmpost/pi10k/blob/main/user-guide.md"
-          >
+          <IconButton size="lg" component="a" href={userGuideUrl}>
             <HelpOutline />
           </IconButton>
           <ModeToggle />

@@ -12,3 +12,6 @@ export const hotkeys = {
 };
 
 export const localStorageConfigKey = "config";
+
+export const userGuideUrl =
+  "https://github.com/johnmpost/pi10k/blob/main/GUIDE.md";
