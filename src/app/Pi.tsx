@@ -73,7 +73,12 @@ export const Pi = () => {
                 ? shownPi.left
                 : " ".repeat(config.showExtraDigitsCount)}
             </Typography>
-            <Typography component="pre" fontFamily="monospace" fontSize={64}>
+            <Typography
+              color="primary"
+              component="pre"
+              fontFamily="monospace"
+              fontSize={64}
+            >
               {shownPi.center}
             </Typography>
             {state.mode.kind === "practice" ? (
