@@ -39,7 +39,7 @@ export const Pi = () => {
       onBlur={() => setFocused(false)}
       ref={mainDivRef}
     >
-      <Sheet sx={{ height: "100%", padding: 2 }}>
+      <Sheet sx={{ height: "100%", padding: 2, overflow: "clip" }}>
         <Stack
           direction="row"
           alignItems="center"
