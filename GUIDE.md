@@ -15,3 +15,7 @@
 `g` to start a `goto` keycut. The parameter for this can be a digit between 0 and 10,000 or `g`, which means "go to mark."
 
 `s` to start a `setMark` keycut. The parameter for this can be a digit between 0 and 10,000 or `s`, which means "set mark at current location."
+
+## Settings
+
+You can configure some preferences to your liking. They will be saved to your browser.
